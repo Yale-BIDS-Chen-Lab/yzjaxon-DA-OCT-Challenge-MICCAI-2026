@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_dir=$(git rev-parse --show-toplevel)
+cd "$repo_dir"
+participants=${OCTTTA_AIREADI_PARTICIPANTS:-${OCTTTA_DATA:-}/public/ai_readi/participants.tsv}
+if [[ ! -f "$participants" ]]; then
+  printf 'ID_SCAN ERROR: licensed participant metadata is unavailable\n' >&2
+  exit 2
+fi
+
+args=(--participants "$participants" --tree HEAD)
+for weight in model.pt model_b.pt; do
+  if [[ -f "$weight" ]]; then
+    args+=(--weight "$weight")
+  fi
+done
+python scripts/scan_ids.py "${args[@]}"

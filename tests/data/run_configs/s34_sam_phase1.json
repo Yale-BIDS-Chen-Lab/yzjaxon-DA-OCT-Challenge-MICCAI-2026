@@ -1,0 +1,340 @@
+{
+ "_doc": "The config.resolved.yaml of one Final training run, normalised: the scratch root spelled ${OCTTTA_SCRATCH}; the subtrees in 'dropped' removed; train.finetune_from kept, with the historical run names mapped to the release run directories; the string values in 'scrubbed' stored as 'sha256:<hex of the UTF-8 original>' (text the release does not carry). tests/test_recipes.py compares it with the recipe under REGISTER.yaml. source_run and source_sha256 name the file it was made from; warm_start_b (co-teaching only) is the model-B warm start recorded in that run's best_b.pt.",
+ "run": "s34_sam_phase1",
+ "source_run": "e11a_final_p1_s20260734",
+ "lineage": "s34",
+ "stage": "sam_phase1",
+ "recipe": "configs/reproduction/model_b/sam_phase1.yaml",
+ "source_sha256": "28adf8f656559c87b50167bcaa50ebdbd6db2258357ed02b01e221b7e1492407",
+ "dropped": [
+  "experiment",
+  "runtime.out_dir",
+  "runtime.ckpt_dir",
+  "_source",
+  "notes",
+  "eval.select_ruler_resolved"
+ ],
+ "scrubbed": ["config.server_budget.gpu"],
+ "config": {
+  "data": {
+   "root": "${OCTTTA_SCRATCH}/oct_tta_data/synthetic_v1.0/release_dataset",
+   "num_classes": 10,
+   "labeled_device": "Topcon_Maestro2",
+   "unlabeled_devices": ["Topcon_Maestro2_unlabeled", "Heidelberg_Spectralis", "Zeiss_Cirrus"],
+   "oversample_diseased": 2.0,
+   "train_size": [256, 256],
+   "infer_at_native_resolution": true,
+   "crop": {
+    "foreground_prob": 0.6,
+    "foreground_classes": null,
+    "augment_margin": "auto"
+   },
+   "partial_pool": {
+    "enabled": true,
+    "root": "${OCTTTA_SCRATCH}/oct_tta_data/derived/partial_all16_d88",
+    "datasets": [
+     "duke_dme_2015",
+     "jhu_hcms",
+     "oct5k",
+     "aireadi::Heidelberg_Spectralis",
+     "aireadi::Topcon_Maestro2",
+     "aireadi::Topcon_Triton",
+     "aireadi::Zeiss_Cirrus"
+    ],
+    "graders": [1],
+    "official_share": null,
+    "samples_per_epoch": 29000,
+    "sampling": "cover",
+    "cover_epoch_offset": 0,
+    "cell_balance": {
+     "mode": "identity"
+    },
+    "exclude_cells": [],
+    "frame_cap": {
+     "Zeiss_Cirrus|Optic Disc, 6 x 6": 4
+    }
+   },
+   "label_repair": {
+    "mode": "none"
+   },
+   "official_true_boundaries_only": true,
+   "official_synthetic_boundary_map": "gamma",
+   "split": {
+    "scheme": "group_by_content",
+    "val_fraction": 0.2,
+    "seed": 20260818
+   },
+   "normalize": {
+    "mode": "per_image_zscore",
+    "clip_percentiles": [0.5, 99.5]
+   },
+   "loader": {
+    "batch_size": 8,
+    "num_workers": 8,
+    "pin_memory": true,
+    "persistent_workers": true,
+    "prefetch_factor": 4
+   },
+   "pool_entries": ["challenge_release_synthetic", "public_partial_labels_all16_d88"],
+   "convention_shift": false
+  },
+  "runtime": {
+   "seed": 20260734,
+   "deterministic": true,
+   "cudnn_benchmark": false,
+   "device": "cuda",
+   "amp": true,
+   "amp_dtype": "bfloat16",
+   "channels_last": false,
+   "compile": false,
+   "log_every": 50,
+   "val_every_epochs": 25,
+   "save_top_k": 3,
+   "monitor": "challenge_score",
+   "monitor_mode": "max"
+  },
+  "slurm": {
+   "account": "q_chen",
+   "partition": "gpu",
+   "qos": "qos_bids",
+   "gpus": "h200:2",
+   "cpus_per_task": 16,
+   "mem": "192G",
+   "time": "12:00:00"
+  },
+  "server_budget": {
+   "total_seconds": 7200,
+   "presubmission_seconds": 1800,
+   "reserve_for_inference": 1200,
+   "reserve_for_io": 285,
+   "reserve_for_census": 15,
+   "max_train_seconds": 5100,
+   "hard_stop_margin": 0.9,
+   "gpu": "sha256:ec8af74b960a50261ecd575123f5ba2abcead90be53c58faa7a88c46acd389bc"
+  },
+  "fusion_selection": {
+   "enabled": true,
+   "margin": 0.002,
+   "menu": "fusion_menu.json",
+   "budget_seconds": 600,
+   "floor_seconds": 1200,
+   "max_images": 100
+  },
+  "server": {
+   "pool_test_images": false
+  },
+  "inference": {
+   "mode": "sliding_window",
+   "overlap": 0.6875,
+   "patch_size": [256, 256],
+   "max_height": 368
+  },
+  "train": {
+   "epochs": 3,
+   "optimizer": {
+    "name": "adamw",
+    "lr": 0.0001,
+    "weight_decay": 0.0001
+   },
+   "scheduler": {
+    "name": "poly",
+    "power": 0.9,
+    "warmup_epochs": 1
+   },
+   "grad_clip": 12.0,
+   "ema": {
+    "enabled": true,
+    "decay": 0.999
+   },
+   "name": "source_only",
+   "finetune": {
+    "phase": 1,
+    "enc_lr": 1e-05,
+    "dec_lr": 0.0001,
+    "layer_decay": 0.8,
+    "unfreeze_last_blocks": 4
+   },
+   "consistency": {
+    "enabled": false
+   },
+   "interval_share_penalty": {
+    "weight": 1.0,
+    "max_share": 0.6
+   }
+  },
+  "loss": {
+   "terms": [
+    {
+     "name": "cross_entropy",
+     "weight": 1.0,
+     "class_weights": [1.15, 1.1014, 1.0935, 1.0269, 1.2303, 1.2235, 1.14, 1.2721, 1.3159, 1.15]
+    },
+    {
+     "name": "dice",
+     "weight": 1.0,
+     "include_background": true
+    },
+    {
+     "name": "boundary",
+     "weight": 0.2,
+     "warmup_epochs": 5
+    }
+   ],
+   "deep_supervision": {
+    "enabled": true,
+    "weights": [1.0, 0.5, 0.25, 0.125]
+   }
+  },
+  "augment": {
+   "vertical_flip": false,
+   "horizontal_flip": true,
+   "pipeline": [
+    {
+     "name": "random_scale",
+     "range": [0.75, 1.35],
+     "axis": "both",
+     "p": 0.5
+    },
+    {
+     "name": "random_anisotropic_scale",
+     "axial": [0.7, 1.4],
+     "lateral": [0.8, 1.25],
+     "p": 0.4
+    },
+    {
+     "name": "random_rotate",
+     "degrees": 8,
+     "p": 0.3
+    },
+    {
+     "name": "random_translate",
+     "frac": 0.1,
+     "p": 0.3
+    },
+    {
+     "name": "elastic",
+     "alpha": 25,
+     "sigma": 6,
+     "p": 0.2
+    },
+    {
+     "name": "gamma",
+     "range": [0.6, 1.7],
+     "p": 0.5
+    },
+    {
+     "name": "brightness_contrast",
+     "brightness": 0.25,
+     "contrast": 0.3,
+     "p": 0.5
+    },
+    {
+     "name": "gaussian_noise",
+     "sigma": [0, 0.12],
+     "p": 0.35
+    },
+    {
+     "name": "speckle_noise",
+     "sigma": [0, 0.15],
+     "p": 0.35
+    },
+    {
+     "name": "gaussian_blur",
+     "sigma": [0, 1.2],
+     "p": 0.25
+    },
+    {
+     "name": "sharpen",
+     "p": 0.15
+    },
+    {
+     "name": "low_res_simulation",
+     "scale": [0.5, 1.0],
+     "p": 0.25
+    }
+   ]
+  },
+  "postproc": {
+   "enforce_monotonic_columns": true,
+   "allow_class_skips": true,
+   "remove_small_islands": false,
+   "min_island_frac": 0.0001,
+   "min_island_floor": 2,
+   "presence_gate": {
+    "enabled": true,
+    "min_pixel_frac": 0.0005,
+    "min_pixels_floor": 32,
+    "min_mean_conf": 0.5,
+    "protected_classes": [0, 9]
+   },
+   "never_invent_classes": true
+  },
+  "eval": {
+   "metric": "challenge_score",
+   "report_per_vendor": true,
+   "report_per_class": true,
+   "tune_select_metric": "heyex_gamma",
+   "tune_root": "heyex_ruler_gamma_v3",
+   "tune_labels_sha256": "1aafe2a33298d8ff8a49a340c86ae29fb9d9254c768c3a521d2ad99b3d0bd5a7",
+   "tune_max_images": null,
+   "full_every": 5,
+   "fast_every": 2,
+   "fast_max_images": 24,
+   "select_on_fast": false,
+   "max_images": null,
+   "metric_workers": null,
+   "postproc_warmup_epochs": 1,
+   "postproc_gate_topology": 0.2,
+   "pseudo_widefield": {
+    "enabled": true,
+    "width_scale": 2.5,
+    "vignette": 0.5,
+    "drop_peripheral_layers": true,
+    "seed": 0
+   }
+  },
+  "uda": {
+   "enabled": false
+  },
+  "model": {
+   "name": "vit_fpn",
+   "source": "octtta.models.vit_fpn.ViTFPN",
+   "params": {
+    "backbone": "samvit_large_patch16.sa1b",
+    "patch_size": 16,
+    "in_channels": 1,
+    "out_channels": 10,
+    "indices": [5, 11, 17, 23],
+    "dim": 256,
+    "encoder_weights": "${OCTTTA_SCRATCH}/oct_tta_ckpts/e08/sam_l_offtheshelf.pt",
+    "pretrained": false,
+    "deep_supervision": true,
+    "encoder_window_size": 16
+   },
+   "pretrained": null
+  },
+  "failaug": {
+   "enabled": true,
+   "mode": "gwarp",
+   "p": 0.3,
+   "extreme_frac": 0.1666,
+   "gwarp": {
+    "shift_frac": [0.04, 0.3],
+    "shift_frac_extreme": [0.3, 0.45],
+    "squeeze_frac": [0.03, 0.2],
+    "squeeze_frac_extreme": [0.2, 0.3]
+   }
+  },
+  "discaug": {
+   "p": 0.25,
+   "width_frac": [0.1, 0.22],
+   "asymmetry": [0.6, 1.6],
+   "residual_frac": [0.15, 0.45],
+   "residual_px_min": 12,
+   "bm_ratio": [0.15, 0.95],
+   "tail_frac": 0.06,
+   "darken": [0.3, 0.7],
+   "skip_protocols": ["Optic Disc, 6 x 6"]
+  }
+ }
+}

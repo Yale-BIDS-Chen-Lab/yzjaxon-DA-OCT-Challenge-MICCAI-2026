@@ -1,0 +1,840 @@
+{
+  "_doc": [
+    "Expected inputs and pins of the reproduction, one table read by the tests and the wizard. It carries no AI-READI participant id.",
+    "needs: data sets a test may depend on. A test marked needs(<name>) is skipped unless every file listed is present with the listed size (and sha256 where given) and every directory in 'count' holds exactly that many regular files; with OCTTTA_TEST_REQUIRE_DATA=1 it runs anyway and fails on what is missing.",
+    "roots: where a needs entry looks. Each root is its environment variable if set, else its default, in which ${name} is another root.",
+    "published_weights / published_pair: the published pair's pins and the sha256 of configs/published_pair.json."
+  ],
+  "schema": "octtta/expected/1",
+  "roots": {
+    "scratch": {
+      "env": "OCTTTA_SCRATCH",
+      "default": "~/oct_tta_scratch"
+    },
+    "data": {
+      "env": "OCTTTA_DATA",
+      "default": "${scratch}/oct_tta_data"
+    },
+    "runs": {
+      "env": "OCTTTA_RUNS",
+      "default": "${scratch}/oct_tta_runs"
+    },
+    "published_weights": {
+      "env": "OCTTTA_PUBLISHED_WEIGHTS",
+      "default": "${runs}/export_dual_rc20"
+    }
+  },
+  "needs": {
+    "shipped_weights": {
+      "why": "the published pair (model.pt, model_b.pt), for the tests that read its payloads or hash the files",
+      "root": "published_weights",
+      "files": {
+        "model.pt": {
+          "bytes": 1252407063
+        },
+        "model_b.pt": {
+          "bytes": 133995775
+        }
+      }
+    },
+    "kit": {
+      "why": "the organisers' starting kit (entrypoint and scoring program)",
+      "root": "data",
+      "files": {
+        "starting_kit/app_ingestion/program/entrypoint.sh": {
+          "bytes": 1545,
+          "sha256": "a57dd17416228994af3c2e574f854a4365c90a31c9f387ec75fdf0e1f17b54a4"
+        },
+        "starting_kit/app_scoring/program/scoring.py": {
+          "bytes": 6381,
+          "sha256": "124e918bcd509fbea043f465e4e6f922f9e59e97933c75ba7a915a2efed1b079"
+        },
+        "starting_kit/app_scoring/program/metrics.py": {
+          "bytes": 19237,
+          "sha256": "3d40208008c52dc5cd2800f4713ee3138097f6d30152aad3d915fb87d484ed0f"
+        }
+      },
+      "count": {
+        "starting_kit": 2275
+      }
+    },
+    "synthetic": {
+      "why": "the organisers' synthetic release v1.0 (230 labelled Maestro2 images)",
+      "root": "data",
+      "count": {
+        "synthetic_v1.0": 1559
+      }
+    }
+  },
+  "published_weights": {
+    "model.pt": {
+      "bytes": 1252407063,
+      "sha256": "796947502935cb480a29f3ee2edfc7bb021fc40165c43a28f82aecec5e166e5c"
+    },
+    "model_b.pt": {
+      "bytes": 133995775,
+      "sha256": "23024511ed887cfc2e6d694941b1ae68443ae33806d223f31c6d61443e1f5b3d"
+    }
+  },
+  "published_pair": {
+    "path": "configs/published_pair.json",
+    "sha256": "d49ce8ba907aa36dc86d608d6c507c4940ac77bd2305d63d69fe5aef45765ef4"
+  },
+  "inputs": {
+    "public_archives": {
+      "jhu_hcms.zip": {
+        "url": "https://iacl.ece.jhu.edu/~aaron/data/OCT_Manual_Delineations-2018_June_29_b.zip",
+        "sha256": "bae59f42d35174ff7cc5d71e5f221e7334ed2ce0f1567cca6ca2e199f0fa2690",
+        "bytes": 1829894561,
+        "extract_root": "jhu_hcms"
+      },
+      "duke_dme_2015.zip": {
+        "url": "https://people.duke.edu/~sf59/Datasets/2015_BOE_Chiu2.zip",
+        "sha256": "c7ff12bdc1c1732f3cc694a3a23e1570d1ea5eb41203f727d20fcf3e4099d878",
+        "bytes": 178294576,
+        "extract_root": "duke_dme_2015"
+      },
+      "oct5k_annotations.zip": {
+        "url": "https://ndownloader.figshare.com/files/44436359",
+        "sha256": "ae61b43b11c51f39a755b3b63ba4a6353adb99b1e581792c360caa6740df2611",
+        "bytes": 50785615,
+        "extract_root": "oct5k_annotations"
+      }
+    },
+    "official": {
+      "starting_kit": {
+        "url": "https://qtim-challenges.southcentralus.cloudapp.azure.com/datasets/download/799fb349-7c92-4e0d-b05a-30e9d441f49a/",
+        "sha256": "b94789a1a4bbfbfdb6ca4d48faab3a7043aace98418a6f0253aca22a1c1de2d8",
+        "bytes": 248723947,
+        "files": 2281
+      },
+      "synthetic": {
+        "url": "https://media.githubusercontent.com/media/wusmai/miccai-challenge-daoct-baseline/main/data_synthetic_v1.0.tar",
+        "md5": "69e64f431ee6e5ac5b199c96c48c6d7c",
+        "bytes": 217016320,
+        "files": 1559
+      }
+    },
+    "sam_l": {
+      "repo": "timm/samvit_large_patch16.sa1b",
+      "filename": "model.safetensors",
+      "sha256": "a9798021c4fa01b8d7df0d053d2b55e6c0a1f7d25611afad1018b84761bf1393",
+      "bytes": 1233145950,
+      "export_tensors": 345,
+      "export_params": 307753984
+    },
+    "isfahan": {
+      "extract_root": "public/extracted/isfahan",
+      "selection_csv": "public/extracted/oct5k_annotations/OCT5k/Scripts/paths/manual_paths.csv",
+      "n_files": 1672,
+      "inventory_sha256": "78ab905285c838b58cb712a0400a11d28d831ae5c133747bd5eaf13b37744793"
+    }
+  },
+  "aireadi": {
+    "release": {
+      "version": "3.0.0",
+      "doi": "10.60775/fairhub.3",
+      "participants": 2280,
+      "split": {
+        "test": 352,
+        "train": 1576,
+        "val": 352
+      },
+      "oct_manifest_rows": 56477,
+      "octa_manifest_rows": 24560,
+      "octa_manifest_sha256": "fdd3756964ed3aa111710b6bc089bb0575883680e49edeb2ee3dc8084762afdb"
+    },
+    "exclusions": {
+      "file_sha256": "2f192a7316f3906f394c71168c3d4a08a02a5cec47d642f0971d441ac2208271",
+      "test_split_persons": 352,
+      "test_split_oct_volumes": 8671,
+      "never_train": {
+        "by_model": {
+          "Cirrus": 1887,
+          "Maestro2": 1407,
+          "Spectralis": 1175,
+          "Triton": 1399
+        },
+        "total": 5868,
+        "sorted_fingerprints_sha256": "e26dd34f577afb813c9a0b40bde7a8450da0d8fc17164a25396dd27dc330a537"
+      },
+      "labelled_quality": {
+        "volumes_by_vendor": {
+          "Heidelberg_Spectralis": 57,
+          "Topcon_Maestro2": 2,
+          "Topcon_Triton": 0,
+          "Zeiss_Cirrus": 6
+        },
+        "frames_stated_by_list": 1026,
+        "sorted_fingerprint_vendor_sha256": "8b4f5376f4bbc68c6d09e405dd62260c4bff9a59602942125459b37b309125e1"
+      },
+      "unlabelled_duplicates": {
+        "volumes": 15,
+        "planned_frames": 240,
+        "sorted_fingerprint_vendor_sha256": "217b1b23114e2da119673a803cca0e677dd30d163483fdf2348cd8aae3e86b86"
+      },
+      "fingerprint": "HMAC-SHA256 of the relative path, truncated to 16 hex digits; key derivation is defined in scripts/data/aireadi_common.py and uses the sorted licensed structural manifest."
+    },
+    "pretrain_manifest": {
+      "sha256": "a8cb2adafa8a8ca7a8f788e71fd5a89627f377816cae41e0facf06007060cbc3",
+      "volumes": 41938,
+      "persons": 1686,
+      "planned_frames": 670864,
+      "by_model": {
+        "Spectralis": 8198,
+        "Maestro2": 10111,
+        "Triton": 9988,
+        "Cirrus": 13641
+      }
+    },
+    "octa_donor_volumes": 18218,
+    "labelled_selection": {
+      "Heidelberg_Spectralis": {
+        "volumes": 1646,
+        "selection_sha256": "8f1bd346e1d1ed669a411af84e11331e2f6563f75fd9db1ec3bba4be7d57380b"
+      },
+      "Topcon_Maestro2": {
+        "volumes": 3342,
+        "selection_sha256": "90eb6793ea7d79c84eaeb4f3a9da705289db90da59afa381e51829d58f6ed6e6"
+      },
+      "Topcon_Triton": {
+        "volumes": 6600,
+        "selection_sha256": "12ad409bd9f2183f9be0efce0a41e17077fec8d47634b573853003082c3fa77f"
+      },
+      "Zeiss_Cirrus": {
+        "volumes": 6565,
+        "selection_sha256": "6ea25dc4d992801159608d644d4b13e2d522f9d694ee8fe74cf9c6d38881d3fc"
+      }
+    }
+  },
+  "pools": {
+    "labelled": {
+      "root": "derived/partial_all16_d88",
+      "dirs": {
+        "aireadi::Heidelberg_Spectralis": {
+          "frames": 26028,
+          "volumes": 1635,
+          "persons": 847,
+          "stems_sha256": "e1ea752c8312671625965509c0d7d3972d3e5a760de197736c669d84d63d8d7c",
+          "frames_by_cell": {
+            "Heidelberg_Spectralis|Macula, 20 x 20": 26028
+          },
+          "offsets_px": [],
+          "decoded_digest": "4bc50bc6704c85acafd1db9d9973158955b94fb3ffc01cf558ab29431c7adbb1",
+          "png_bytes_digest": "6c5ac56901791e78703457f7deea2db13f6ad8d0b0e97baeeea46893b6a8da63"
+        },
+        "aireadi::Topcon_Maestro2": {
+          "frames": 52597,
+          "volumes": 3314,
+          "persons": 1637,
+          "stems_sha256": "3cc321a212525eae32bda162d9e4bf9f8457d83af154bec643435161957bc9f6",
+          "frames_by_cell": {
+            "Topcon_Maestro2|Macula, 6 x 6": 52597
+          },
+          "offsets_px": [],
+          "decoded_digest": "59c65270f34150099ed9f98ce042a5870e852dc6f6d7fe65b6febc12732d85d2",
+          "png_bytes_digest": "d20e21bed4048c3af5b06379b4930e73790493cf62099e9c55e429b2528d40f9"
+        },
+        "aireadi::Topcon_Triton": {
+          "frames": 103623,
+          "volumes": 6594,
+          "persons": 1619,
+          "stems_sha256": "e7bba66f86319b677fd80598edef5addc064a658bfd0f9be05542ecdc5d446d7",
+          "frames_by_cell": {
+            "Topcon_Triton|Macula, 12 x 12": 51976,
+            "Topcon_Triton|Macula, 6 x 6": 51647
+          },
+          "offsets_px": [],
+          "decoded_digest": "908a112d93e1f470e0fbf92a2a024c76f4239e239d3b90a522e67eb3dd1e4671",
+          "png_bytes_digest": "a951863760c17e705328dcfc799a99cd1d50d9a815836f08418aa5a9626b0cf4"
+        },
+        "aireadi::Zeiss_Cirrus": {
+          "frames": 104788,
+          "volumes": 6555,
+          "persons": 1625,
+          "stems_sha256": "f782261f0ec14134f965975607f789c15796cd8103656a212a34f560c674665b",
+          "frames_by_cell": {
+            "Zeiss_Cirrus|Macula, 6 x 6": 52355,
+            "Zeiss_Cirrus|Optic Disc, 6 x 6": 52433
+          },
+          "offsets_px": [
+            [
+              8,
+              9
+            ]
+          ],
+          "decoded_digest": "865fbebfbb90dc707c24cb9c54abcac5d8cd7c392a33bd45faa468705bf2681e",
+          "png_bytes_digest": "fdfe5035ac62af51ad555da9b1764ece985fe47e90c8bebc1f70f04c4be49247"
+        },
+        "duke_dme_2015": {
+          "frames": 110,
+          "volumes": 10,
+          "persons": 10,
+          "stems_sha256": "62e771a5f481c838980848c13db064d97cabc1c0ff2cc9a0efe7d5e68648e26c",
+          "decoded_digest": "b7a7f95e13c98700d438bdb1a082900e83cb52a6fd6bb7fb3bbf7b6f0e5af627",
+          "png_bytes_digest": "b0b94514a4631c89029400194ab8a9c3822d29140fec3f6c86eb25668e0bf5a2",
+          "offsets_px": []
+        },
+        "jhu_hcms": {
+          "frames": 1715,
+          "volumes": 35,
+          "persons": 35,
+          "stems_sha256": "651f68c03514b4083062640a2f2cf71a3257aa2ddba1eb36f07a718b29bdbb38",
+          "decoded_digest": "9e9ed2b82469a5b3edf063214ad14842e33114011ce362dba5a09a53fc95f424",
+          "png_bytes_digest": "a728d3c21e04b44564316a361b38b7346876ac53451cadf7de9461715e4d69a6",
+          "offsets_px": []
+        },
+        "oct5k": {
+          "frames": 1672,
+          "volumes": 60,
+          "persons": 5,
+          "stems_sha256": "7b6fea09715bce775b2070fbadb7a4a9125f749f1a1389f305c5d968834ea445",
+          "decoded_digest": "ff4cd321a1c5d3abb06a857af6ca002ea2ccd52b25809e2f377138568affe84f",
+          "png_bytes_digest": "5d3db33b6c060b7eda470053970364cfe5d470d7e3558321c3300e74acaf5ddd",
+          "offsets_px": []
+        }
+      },
+      "total_aireadi_frames": 287036
+    },
+    "unlabelled": {
+      "root": "derived/unlabeled_all_d88",
+      "dirs": {
+        "Heidelberg_Spectralis_unlabeled_onh": {
+          "frames": 51856,
+          "volumes": 3241,
+          "persons": 1622,
+          "stems_sha256": "31e003e76fc7bcc2e2bef85af42c7a68726718b49a6d514359658fff6b8ef885",
+          "decoded_digest": "40c54be257fe7b81656b7d33b3927d1e1af91a5c25c8e4a8be69ab303ac24391",
+          "png_bytes_digest": "68009c494bc4fe040ef4d24c36a25ef267cda458d597e9db0b4888b2a4fbd01c"
+        },
+        "Heidelberg_Spectralis_unlabeled_wide": {
+          "frames": 51824,
+          "volumes": 3239,
+          "persons": 1629,
+          "stems_sha256": "04280d68db5c713d5ca64eca2cad0b165d0da6714e18553100baa54a3666a058",
+          "decoded_digest": "1c8d84152bfb3a5a9846c60de9ec1b7f871079975e3bb353c1626ecd4f9b3202",
+          "png_bytes_digest": "d04e51e89ca4a4ff44406f583ddc8d8f108bed9b898892b8e3f466272ef55fbe"
+        },
+        "Topcon_Maestro2_unlabeled_macula": {
+          "frames": 53071,
+          "volumes": 3338,
+          "persons": 1651,
+          "stems_sha256": "3853292c864cd4e27826ce6ece7f126f26dc61fe67b03c5485927ad0752b62d0",
+          "decoded_digest": "ea8cc911aff65e4c626608ba1f94788214727279d8937c617fdd33c1a463c63e",
+          "png_bytes_digest": "91fac33ec1659b9bbea0504aa92878202653badceea0064899ba2e3bfa58cfd4"
+        },
+        "Topcon_Maestro2_unlabeled_widefield": {
+          "frames": 54072,
+          "volumes": 3411,
+          "persons": 1651,
+          "stems_sha256": "19664af0fa394b9e6bf959d7ab003e68564219f8862c6dc2b3dfb739fa0714ea",
+          "decoded_digest": "ebbe009056a259c29f4297bb0cf65f9b6d32871034342276f0e46fa1a12ec488",
+          "png_bytes_digest": "888d0c2ef13426d7a8809ab4fea729c176ca1fdd1845d194dfa854634c2f2a79"
+        },
+        "Topcon_Triton_unlabeled_onh": {
+          "frames": 53883,
+          "volumes": 3386,
+          "persons": 1610,
+          "stems_sha256": "231aabab06509a2d36f1df76d8cb8594f72dfa4a99599fa443e0787d706c8a8e",
+          "decoded_digest": "2bc14807b1c110c38db31ce00e3d4bc46aa1bc0f04687fa8937a518d9d5743e0",
+          "png_bytes_digest": "99080a8d16e50b7a19277f7e882773d4af9e90808fa50f10d1332e6ecf75ecb4"
+        },
+        "Zeiss_Cirrus_unlabeled_macula": {
+          "frames": 54973,
+          "volumes": 3440,
+          "persons": 1676,
+          "stems_sha256": "ff027dc27e937209f44a886f016285de9d1dc2aaaa329cd13df22c940c531bdf",
+          "decoded_digest": "a7db1ad2eecd0f85f734d88c7031ed9b1df8442934b44b632370c7ac4bc32d96",
+          "png_bytes_digest": "eafd31229682bf71f06b378f4f33cf38ed5985cfde388f35ab996f27e7a4d1de"
+        },
+        "Zeiss_Cirrus_unlabeled_onh": {
+          "frames": 57967,
+          "volumes": 3629,
+          "persons": 1666,
+          "stems_sha256": "3242aaf5c7e125581d5f82504c3bf345cd0f415ea1c28cda5bdf93a952283ee6",
+          "decoded_digest": "427118250a22ff8fa022d4674a06a8cedca08ecd7e6cfabb3e637b32bf1d3994",
+          "png_bytes_digest": "9146b6a7902a29ef687a10701b2f5ba2c3486d0b7e6fa21e3ab17fb51be027cf"
+        }
+      },
+      "frames": 377646,
+      "volumes_with_frames": 23684,
+      "volumes_planned": 23705,
+      "persons": 1685,
+      "qc_rejected": 1634,
+      "qc_rejected_by_reason": {
+        "column_range": 0,
+        "column_correlation": 1534,
+        "tissue_band_snr": 100
+      },
+      "duplicates": {
+        "volumes": 15,
+        "planned_frames": 240
+      },
+      "manifest_tsv_sha256": "65b042fe0199ae2f0bee5a06ad27bdc375bfc2ae2f604355c97198611b68c8ab",
+      "manifest_tsv_rows": 377646,
+      "coteach_full_pass": {
+        "frames": 377646,
+        "batch": 8,
+        "remainder": 6,
+        "steps": 47205
+      }
+    }
+  },
+  "runs": {
+    "s33_sam_phase1": {
+      "epochs": 3,
+      "stop_epoch": null,
+      "last_epoch": 2,
+      "global_step": 10875,
+      "steps_per_epoch": 3625,
+      "n_train": 251406,
+      "n_val": 44,
+      "capped": 39313,
+      "full_pass": null,
+      "finetune_from": null,
+      "finetune_from_b": null,
+      "partial_pool": {
+        "n": 251220,
+        "by_cell": {
+          "Heidelberg_Spectralis|Macula, 20 x 20": 26028,
+          "Heidelberg_Spectralis|duke_dme_2015": 110,
+          "Heidelberg_Spectralis|jhu_hcms": 1715,
+          "Heidelberg_Spectralis|oct5k": 1672,
+          "Topcon_Maestro2|Macula, 6 x 6": 52597,
+          "Topcon_Triton|Macula, 12 x 12": 51976,
+          "Topcon_Triton|Macula, 6 x 6": 51647,
+          "Zeiss_Cirrus|Macula, 6 x 6": 52355,
+          "Zeiss_Cirrus|Optic Disc, 6 x 6": 13120
+        },
+        "capped": {
+          "n": 39313,
+          "by_cell": {
+            "Zeiss_Cirrus|Optic Disc, 6 x 6": {
+              "cap": 4,
+              "volumes": 3280,
+              "kept": 13120,
+              "dropped": 39313
+            }
+          }
+        }
+      },
+      "draws_per_epoch": 29000,
+      "draws_per_epoch_effective": 29000,
+      "sampling": {
+        "mode": "cover",
+        "draws_per_epoch": 29000,
+        "pass_length": 416507,
+        "epochs_per_pass": 14.362,
+        "epoch_offset": 0,
+        "diseased_repeats": 2,
+        "oversample_diseased": 2.0
+      },
+      "batch_size": 8
+    },
+    "s33_sam_phase2": {
+      "epochs": 15,
+      "stop_epoch": null,
+      "last_epoch": 14,
+      "global_step": 54375,
+      "steps_per_epoch": 3625,
+      "n_train": 251406,
+      "n_val": 44,
+      "capped": 39313,
+      "full_pass": null,
+      "finetune_from": "s33_sam_phase1/checkpoints/last.pt",
+      "finetune_from_b": null,
+      "partial_pool": {
+        "n": 251220,
+        "by_cell": {
+          "Heidelberg_Spectralis|Macula, 20 x 20": 26028,
+          "Heidelberg_Spectralis|duke_dme_2015": 110,
+          "Heidelberg_Spectralis|jhu_hcms": 1715,
+          "Heidelberg_Spectralis|oct5k": 1672,
+          "Topcon_Maestro2|Macula, 6 x 6": 52597,
+          "Topcon_Triton|Macula, 12 x 12": 51976,
+          "Topcon_Triton|Macula, 6 x 6": 51647,
+          "Zeiss_Cirrus|Macula, 6 x 6": 52355,
+          "Zeiss_Cirrus|Optic Disc, 6 x 6": 13120
+        },
+        "capped": {
+          "n": 39313,
+          "by_cell": {
+            "Zeiss_Cirrus|Optic Disc, 6 x 6": {
+              "cap": 4,
+              "volumes": 3280,
+              "kept": 13120,
+              "dropped": 39313
+            }
+          }
+        }
+      },
+      "draws_per_epoch": 29000,
+      "draws_per_epoch_effective": 29000,
+      "sampling": {
+        "mode": "cover",
+        "draws_per_epoch": 29000,
+        "pass_length": 416507,
+        "epochs_per_pass": 14.362,
+        "epoch_offset": 3,
+        "diseased_repeats": 2,
+        "oversample_diseased": 2.0
+      },
+      "batch_size": 8
+    },
+    "s33_cnn": {
+      "epochs": 30,
+      "stop_epoch": 25,
+      "last_epoch": 24,
+      "global_step": 90625,
+      "steps_per_epoch": 3625,
+      "n_train": 290717,
+      "n_val": 46,
+      "capped": 0,
+      "full_pass": null,
+      "finetune_from": null,
+      "finetune_from_b": null,
+      "partial_pool": {
+        "n": 290533,
+        "by_cell": {
+          "Heidelberg_Spectralis|Macula, 20 x 20": 26028,
+          "Heidelberg_Spectralis|duke_dme_2015": 110,
+          "Heidelberg_Spectralis|jhu_hcms": 1715,
+          "Heidelberg_Spectralis|oct5k": 1672,
+          "Topcon_Maestro2|Macula, 6 x 6": 52597,
+          "Topcon_Triton|Macula, 12 x 12": 51976,
+          "Topcon_Triton|Macula, 6 x 6": 51647,
+          "Zeiss_Cirrus|Macula, 6 x 6": 52355,
+          "Zeiss_Cirrus|Optic Disc, 6 x 6": 52433
+        },
+        "capped": {
+          "n": 0,
+          "by_cell": {}
+        }
+      },
+      "draws_per_epoch": 29000,
+      "draws_per_epoch_effective": 29000,
+      "sampling": {
+        "mode": "cover",
+        "draws_per_epoch": 29000,
+        "pass_length": 481398,
+        "epochs_per_pass": 16.6,
+        "epoch_offset": 0,
+        "diseased_repeats": 2,
+        "oversample_diseased": 2.0
+      },
+      "batch_size": 8
+    },
+    "s33_coteach": {
+      "epochs": 1,
+      "stop_epoch": null,
+      "last_epoch": 0,
+      "global_step": 47205,
+      "steps_per_epoch": 47205,
+      "n_train": 251406,
+      "n_val": 44,
+      "capped": 39313,
+      "full_pass": {
+        "claimed": true,
+        "n_unlabeled_pool": 377646,
+        "samples_per_epoch": 377640,
+        "supervised_batch": 8,
+        "supervised_steps": 47205,
+        "max_steps": null,
+        "effective_supervised_steps": 47205,
+        "every": 1,
+        "teach_steps": 47205,
+        "pseudo_batch": 8,
+        "frames_taught": 377640,
+        "unlabeled_batches": 47206,
+        "remainder": 6,
+        "remainder_declared_max": 7,
+        "release_unlabeled": "excluded"
+      },
+      "finetune_from": "s33_sam_phase2/checkpoints/last.pt",
+      "finetune_from_b": "s33_cnn/checkpoints/last.pt",
+      "partial_pool": {
+        "n": 251220,
+        "by_cell": {
+          "Heidelberg_Spectralis|Macula, 20 x 20": 26028,
+          "Heidelberg_Spectralis|duke_dme_2015": 110,
+          "Heidelberg_Spectralis|jhu_hcms": 1715,
+          "Heidelberg_Spectralis|oct5k": 1672,
+          "Topcon_Maestro2|Macula, 6 x 6": 52597,
+          "Topcon_Triton|Macula, 12 x 12": 51976,
+          "Topcon_Triton|Macula, 6 x 6": 51647,
+          "Zeiss_Cirrus|Macula, 6 x 6": 52355,
+          "Zeiss_Cirrus|Optic Disc, 6 x 6": 13120
+        },
+        "capped": {
+          "n": 39313,
+          "by_cell": {
+            "Zeiss_Cirrus|Optic Disc, 6 x 6": {
+              "cap": 4,
+              "volumes": 3280,
+              "kept": 13120,
+              "dropped": 39313
+            }
+          }
+        }
+      },
+      "draws_per_epoch": 377640,
+      "draws_per_epoch_effective": 377640,
+      "sampling": {
+        "mode": "cover",
+        "draws_per_epoch": 377640,
+        "pass_length": 416507,
+        "epochs_per_pass": 1.103,
+        "epoch_offset": 0,
+        "diseased_repeats": 2,
+        "oversample_diseased": 2.0
+      },
+      "batch_size": 8
+    },
+    "s34_sam_phase1": {
+      "epochs": 3,
+      "stop_epoch": null,
+      "last_epoch": 2,
+      "global_step": 10875,
+      "steps_per_epoch": 3625,
+      "n_train": 251406,
+      "n_val": 44,
+      "capped": 39313,
+      "full_pass": null,
+      "finetune_from": null,
+      "finetune_from_b": null,
+      "partial_pool": {
+        "n": 251220,
+        "by_cell": {
+          "Heidelberg_Spectralis|Macula, 20 x 20": 26028,
+          "Heidelberg_Spectralis|duke_dme_2015": 110,
+          "Heidelberg_Spectralis|jhu_hcms": 1715,
+          "Heidelberg_Spectralis|oct5k": 1672,
+          "Topcon_Maestro2|Macula, 6 x 6": 52597,
+          "Topcon_Triton|Macula, 12 x 12": 51976,
+          "Topcon_Triton|Macula, 6 x 6": 51647,
+          "Zeiss_Cirrus|Macula, 6 x 6": 52355,
+          "Zeiss_Cirrus|Optic Disc, 6 x 6": 13120
+        },
+        "capped": {
+          "n": 39313,
+          "by_cell": {
+            "Zeiss_Cirrus|Optic Disc, 6 x 6": {
+              "cap": 4,
+              "volumes": 3280,
+              "kept": 13120,
+              "dropped": 39313
+            }
+          }
+        }
+      },
+      "draws_per_epoch": 29000,
+      "draws_per_epoch_effective": 29000,
+      "sampling": {
+        "mode": "cover",
+        "draws_per_epoch": 29000,
+        "pass_length": 416507,
+        "epochs_per_pass": 14.362,
+        "epoch_offset": 0,
+        "diseased_repeats": 2,
+        "oversample_diseased": 2.0
+      },
+      "batch_size": 8
+    },
+    "s34_sam_phase2": {
+      "epochs": 15,
+      "stop_epoch": null,
+      "last_epoch": 14,
+      "global_step": 54375,
+      "steps_per_epoch": 3625,
+      "n_train": 251406,
+      "n_val": 44,
+      "capped": 39313,
+      "full_pass": null,
+      "finetune_from": "s34_sam_phase1/checkpoints/last.pt",
+      "finetune_from_b": null,
+      "partial_pool": {
+        "n": 251220,
+        "by_cell": {
+          "Heidelberg_Spectralis|Macula, 20 x 20": 26028,
+          "Heidelberg_Spectralis|duke_dme_2015": 110,
+          "Heidelberg_Spectralis|jhu_hcms": 1715,
+          "Heidelberg_Spectralis|oct5k": 1672,
+          "Topcon_Maestro2|Macula, 6 x 6": 52597,
+          "Topcon_Triton|Macula, 12 x 12": 51976,
+          "Topcon_Triton|Macula, 6 x 6": 51647,
+          "Zeiss_Cirrus|Macula, 6 x 6": 52355,
+          "Zeiss_Cirrus|Optic Disc, 6 x 6": 13120
+        },
+        "capped": {
+          "n": 39313,
+          "by_cell": {
+            "Zeiss_Cirrus|Optic Disc, 6 x 6": {
+              "cap": 4,
+              "volumes": 3280,
+              "kept": 13120,
+              "dropped": 39313
+            }
+          }
+        }
+      },
+      "draws_per_epoch": 29000,
+      "draws_per_epoch_effective": 29000,
+      "sampling": {
+        "mode": "cover",
+        "draws_per_epoch": 29000,
+        "pass_length": 416507,
+        "epochs_per_pass": 14.362,
+        "epoch_offset": 3,
+        "diseased_repeats": 2,
+        "oversample_diseased": 2.0
+      },
+      "batch_size": 8
+    },
+    "s34_cnn": {
+      "epochs": 30,
+      "stop_epoch": null,
+      "last_epoch": 29,
+      "global_step": 108750,
+      "steps_per_epoch": 3625,
+      "n_train": 290717,
+      "n_val": 46,
+      "capped": 0,
+      "full_pass": null,
+      "finetune_from": null,
+      "finetune_from_b": null,
+      "partial_pool": {
+        "n": 290533,
+        "by_cell": {
+          "Heidelberg_Spectralis|Macula, 20 x 20": 26028,
+          "Heidelberg_Spectralis|duke_dme_2015": 110,
+          "Heidelberg_Spectralis|jhu_hcms": 1715,
+          "Heidelberg_Spectralis|oct5k": 1672,
+          "Topcon_Maestro2|Macula, 6 x 6": 52597,
+          "Topcon_Triton|Macula, 12 x 12": 51976,
+          "Topcon_Triton|Macula, 6 x 6": 51647,
+          "Zeiss_Cirrus|Macula, 6 x 6": 52355,
+          "Zeiss_Cirrus|Optic Disc, 6 x 6": 52433
+        },
+        "capped": {
+          "n": 0,
+          "by_cell": {}
+        }
+      },
+      "draws_per_epoch": 29000,
+      "draws_per_epoch_effective": 29000,
+      "sampling": {
+        "mode": "cover",
+        "draws_per_epoch": 29000,
+        "pass_length": 481398,
+        "epochs_per_pass": 16.6,
+        "epoch_offset": 0,
+        "diseased_repeats": 2,
+        "oversample_diseased": 2.0
+      },
+      "batch_size": 8
+    },
+    "s34_coteach": {
+      "epochs": 1,
+      "stop_epoch": null,
+      "last_epoch": 0,
+      "global_step": 47205,
+      "steps_per_epoch": 47205,
+      "n_train": 251406,
+      "n_val": 44,
+      "capped": 39313,
+      "full_pass": {
+        "claimed": true,
+        "n_unlabeled_pool": 377646,
+        "samples_per_epoch": 377640,
+        "supervised_batch": 8,
+        "supervised_steps": 47205,
+        "max_steps": null,
+        "effective_supervised_steps": 47205,
+        "every": 1,
+        "teach_steps": 47205,
+        "pseudo_batch": 8,
+        "frames_taught": 377640,
+        "unlabeled_batches": 47206,
+        "remainder": 6,
+        "remainder_declared_max": 7,
+        "release_unlabeled": "excluded"
+      },
+      "finetune_from": "s34_sam_phase2/checkpoints/last.pt",
+      "finetune_from_b": "s34_cnn/checkpoints/last.pt",
+      "partial_pool": {
+        "n": 251220,
+        "by_cell": {
+          "Heidelberg_Spectralis|Macula, 20 x 20": 26028,
+          "Heidelberg_Spectralis|duke_dme_2015": 110,
+          "Heidelberg_Spectralis|jhu_hcms": 1715,
+          "Heidelberg_Spectralis|oct5k": 1672,
+          "Topcon_Maestro2|Macula, 6 x 6": 52597,
+          "Topcon_Triton|Macula, 12 x 12": 51976,
+          "Topcon_Triton|Macula, 6 x 6": 51647,
+          "Zeiss_Cirrus|Macula, 6 x 6": 52355,
+          "Zeiss_Cirrus|Optic Disc, 6 x 6": 13120
+        },
+        "capped": {
+          "n": 39313,
+          "by_cell": {
+            "Zeiss_Cirrus|Optic Disc, 6 x 6": {
+              "cap": 4,
+              "volumes": 3280,
+              "kept": 13120,
+              "dropped": 39313
+            }
+          }
+        }
+      },
+      "draws_per_epoch": 377640,
+      "draws_per_epoch_effective": 377640,
+      "sampling": {
+        "mode": "cover",
+        "draws_per_epoch": 377640,
+        "pass_length": 416507,
+        "epochs_per_pass": 1.103,
+        "epoch_offset": 0,
+        "diseased_repeats": 2,
+        "oversample_diseased": 2.0
+      },
+      "batch_size": 8
+    }
+  },
+  "export": {
+    "A": "s33_coteach/checkpoints/last.pt",
+    "B": "s34_coteach/checkpoints/last_b.pt"
+  },
+  "synthetic_reference": {
+    "final_score": 0.30125371080973223,
+    "macula_score": 0.6025074216194645,
+    "widefield_score": 0.0,
+    "labelled_images": 230,
+    "cohorts": {
+      "healthy": {
+        "n": 173,
+        "mean_image_score": 0.633257
+      },
+      "diseased": {
+        "n": 57,
+        "mean_image_score": 0.589332
+      }
+    },
+    "environment": {
+      "python": "3.11.15",
+      "numpy": "1.26.4",
+      "torch": "2.11.0+cu128",
+      "torch_cuda": "12.8",
+      "cudnn": 91900,
+      "gpu_name": "NVIDIA H100 80GB HBM3",
+      "gpu_capability": [
+        9,
+        0
+      ],
+      "cv2": "4.10.0",
+      "driver_versions": [
+        "570.211.01"
+      ]
+    },
+    "note": "These synthetic images were included in training. Exact published comparison requires the recorded H100 environment; other environments and retrained weights are reported separately."
+  }
+}

@@ -1,0 +1,995 @@
+# Every difference between the recipes (configs/reproduction/model_*/**.yaml, resolved) and the normalised
+# configs of the eight Final training runs (tests/data/run_configs/<run>.json).
+# tests/test_recipes.py enforces it; a batch that changes a recipe adds or edits an entry here
+# in the same commit, and one that removes a difference removes its entry.
+#
+# Rule: a key present on both sides must be equal unless an entry says CHANGED (both values
+# pinned); a recipe-only key needs an ADDED entry (recipe value pinned); a snapshot-only key
+# needs a REMOVED entry (snapshot value pinned; tag no_reader, off_value or server_overridden).
+# `path` covers the key itself and every key below it. `runs` is `all` or a list of run names.
+# In pinned string values `<L>` stands for the run's lineage (s33 or s34).
+#
+# Tags:
+#   no_reader          nothing reads the key from a recipe or from a checkpoint config; the
+#                      entry's scan records the search behind that claim (a record, not re-run
+#                      by the tests)
+#   guard_only         read only by a start-up refusal; what the run loads and trains on is
+#                      unchanged (the scan's allow list names the check)
+#   argv               the run took the value from its launcher's command line, not from the
+#                      recipe; tests/test_recipes.py runs the launcher and compares
+#   live               a code path reads the value; `fix` names the batch that removes the
+#                      difference. Never part of configs/published_pair.json:retrained_register
+#   off_value, server_overridden (REMOVED only): the removed key held its feature's off value,
+#                      or the server assembler overwrites it before any reader sees it
+#   decision           an owner decision changed the recipe on purpose; `why` names it
+#
+# Which of these may differ in a retrained export: every entry that applies to s33_coteach
+# (model A) or s34_cnn (model B) and is not `live` is listed, as `config.<path>`, in
+# configs/published_pair.json:retrained_register (asserted by tests/test_recipes.py).
+schema: octtta/recipe_register/1
+
+scans:
+  fusion_selection_block:
+    pattern: fusion_selection
+    allow:
+      octtta/fusion.py: a message label ('fusion_selection.margin') in pick_block's argument check
+      scripts/entrypoint/train.sh: state-file names (the constants are in scripts/entrypoint/budget.sh)
+      scripts/entrypoint/infer.sh: state-file names (the constants are in scripts/entrypoint/budget.sh)
+      scripts/entrypoint/fusion_select.py: help text naming the state file fusion_selection.json
+      submission/preflight.py: reads the state file fusion_selection.json after the package run
+  quoted_gpu:
+    pattern: '["'']gpu["'']'
+    allow:
+      octtta/runenv_status.py: the runtime record's own 'gpu' field
+      submission/preflight.py: the GPU of configs/expected.json inputs.quick_reference and of the host
+      scripts/repro.py: Reads configs/local.yaml slurm.gpu for the reproduction launcher; unrelated to
+        trimmed config.server_budget.gpu.
+  quoted_slurm:
+    pattern: '["'']slurm["'']'
+    allow:
+      octtta/train_state.py: CONFIG_VOLATILE_KEYS, the subtrees left out of the resume fingerprint
+      scripts/repro.py: Reads configs/local.yaml scheduler settings for reproduction; it does not read
+        removed recipe slurm values.
+  ignore_on_disk:
+    pattern: ignore_on_disk
+    allow:
+      octtta/train_data.py: legacy off-value validation, if present
+  b11_data_infer_at_native_resolution:
+    pattern: data\.infer_at_native_resolution
+    allow: {}
+  b11_data_labeled_device:
+    pattern: data\.labeled_device
+    allow: {}
+  b11_eval_metric:
+    pattern: eval\.metric(?![A-Za-z0-9_])
+    allow: {}
+  b11_eval_report_per_class:
+    pattern: eval\.report_per_class
+    allow: {}
+  b11_eval_report_per_vendor:
+    pattern: eval\.report_per_vendor
+    allow: {}
+  b11_model_source:
+    pattern: model\.source
+    allow: {}
+  b11_server_budget_hard_stop_margin:
+    pattern: server_budget\.hard_stop_margin
+    allow: {}
+  b11_server_budget_max_train_seconds:
+    pattern: server_budget\.max_train_seconds
+    allow: {}
+  b11_server_budget_presubmission_seconds:
+    pattern: server_budget\.presubmission_seconds
+    allow: {}
+  b11_server_budget_reserve_for_census:
+    pattern: server_budget\.reserve_for_census
+    allow: {}
+  b11_server_budget_reserve_for_io:
+    pattern: server_budget\.reserve_for_io
+    allow: {}
+  b11_server_budget_total_seconds:
+    pattern: server_budget\.total_seconds
+    allow: {}
+  b11_train_name:
+    pattern: train\.name
+    allow: {}
+entries:
+- path: data.partial_pool.ignore_on_disk
+  kind: ADDED
+  runs: all
+  recipe:
+  - aireadi_inner::Heidelberg_Spectralis
+  - aireadi_inner::Topcon_Maestro2
+  - aireadi_inner::Topcon_Triton
+  - aireadi_inner::Zeiss_Cirrus
+  tag: guard_only
+  scan: ignore_on_disk
+  batch: B11
+  why: 'Only the four on-disk inner pools not selected for training remain excused. The four aireadi::
+    entries are already selected by data.partial_pool.datasets. The startup check may refuse unexpected
+    on-disk pools; the trained dataset is unchanged, and server assembly replaces data.partial_pool before
+    its trainer.'
+- path: train.finetune_from
+  kind: CHANGED
+  runs:
+  - s33_coteach
+  - s34_coteach
+  snapshot: ${OCTTTA_SCRATCH}/oct_tta_runs/<L>_sam_phase2/checkpoints/best.pt
+  recipe: null
+  tag: argv
+  batch: a5da238
+  why: The co-teaching warm starts come from scripts/train/coteach.sbatch (train.finetune_from=<runs>/<L>_sam_phase2/checkpoints/last.pt,
+    --finetune-from-b <runs>/<L>_cnn/checkpoints/last.pt); B8 fixed epochs make last.pt the product corresponding
+    to the historical selected checkpoint. The recipe leaves the key null; the server assembler pops it.
+- path: eval.tune_select_metric
+  kind: CHANGED
+  runs: all
+  snapshot: heyex_gamma
+  recipe: none
+  tag: decision
+  batch: B8
+  why: Owner decisions 6-7 replace local ruler selection with fixed-epoch products; server assembly explicitly
+    selects all10.
+- path: eval.tune_root
+  kind: REMOVED
+  runs: all
+  snapshot: heyex_ruler_gamma_v3
+  tag: decision
+  batch: B8
+  why: Local rulers are not part of the release; server assembly writes null before all10 validation.
+- path: eval.tune_labels_sha256
+  kind: REMOVED
+  runs: all
+  snapshot: 1aafe2a33298d8ff8a49a340c86ae29fb9d9254c768c3a521d2ad99b3d0bd5a7
+  tag: decision
+  batch: B8
+  why: Local rulers are not part of the release; server assembly writes null before all10 validation.
+- path: eval.tune_max_images
+  kind: REMOVED
+  runs: all
+  snapshot: null
+  tag: decision
+  batch: B8
+  why: Local rulers are not part of the release; server assembly writes null before all10 validation.
+- path: train.stop_epoch
+  kind: ADDED
+  runs:
+  - s33_cnn
+  recipe: 25
+  tag: decision
+  batch: B8
+  why: The historical s33 CNN selected epoch 24. Run 25 epochs while preserving train.epochs=30 for its
+    LR schedule.
+- path: data.convention_shift
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: false
+  tag: server_overridden
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is overridden by server_steps.assemble_config
+    before use. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: data.infer_at_native_resolution
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: true
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_data_infer_at_native_resolution
+- path: data.label_repair.mode
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: none
+  tag: off_value
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is the explicit off/default
+    value. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: data.labeled_device
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: Topcon_Maestro2
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_data_labeled_device
+- path: eval.fast_every
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s34_sam_phase1
+  snapshot: 2
+  tag: decision
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is superseded by eval.tune_select_metric=none
+    for the local Final recipe. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.fast_every
+  kind: REMOVED
+  runs:
+  - s33_sam_phase2
+  - s34_sam_phase2
+  snapshot: 4
+  tag: decision
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is superseded by eval.tune_select_metric=none
+    for the local Final recipe. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.fast_every
+  kind: REMOVED
+  runs:
+  - s33_cnn
+  - s34_cnn
+  snapshot: 10
+  tag: decision
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is superseded by eval.tune_select_metric=none
+    for the local Final recipe. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.fast_max_images
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  snapshot: 24
+  tag: decision
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is superseded by eval.tune_select_metric=none
+    for the local Final recipe. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.full_every
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s34_sam_phase1
+  snapshot: 5
+  tag: server_overridden
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is overridden by server_steps.assemble_config
+    before use. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.full_every
+  kind: REMOVED
+  runs:
+  - s33_sam_phase2
+  - s33_coteach
+  - s34_sam_phase2
+  - s34_coteach
+  snapshot: 10
+  tag: server_overridden
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is overridden by server_steps.assemble_config
+    before use. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.full_every
+  kind: REMOVED
+  runs:
+  - s33_cnn
+  - s34_cnn
+  snapshot: 25
+  tag: server_overridden
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is overridden by server_steps.assemble_config
+    before use. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.max_images
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: null
+  tag: server_overridden
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is overridden by server_steps.assemble_config
+    before use. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.metric
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: challenge_score
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_eval_metric
+- path: eval.metric_workers
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: null
+  tag: server_overridden
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is overridden by server_steps.assemble_config
+    before use. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.postproc_gate_topology
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  snapshot: 0.2
+  tag: decision
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is superseded by eval.tune_select_metric=none
+    for the local Final recipe. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.postproc_warmup_epochs
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  snapshot: 1
+  tag: server_overridden
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is overridden by server_steps.assemble_config
+    before use. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.postproc_warmup_epochs
+  kind: REMOVED
+  runs:
+  - s33_coteach
+  - s34_coteach
+  snapshot: 0
+  tag: server_overridden
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is overridden by server_steps.assemble_config
+    before use. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.pseudo_widefield.drop_peripheral_layers
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  snapshot: true
+  tag: decision
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is superseded by eval.tune_select_metric=none
+    for the local Final recipe. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.pseudo_widefield.enabled
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  snapshot: true
+  tag: decision
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is superseded by eval.tune_select_metric=none
+    for the local Final recipe. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.pseudo_widefield.seed
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  snapshot: 0
+  tag: decision
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is superseded by eval.tune_select_metric=none
+    for the local Final recipe. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.pseudo_widefield.vignette
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  snapshot: 0.5
+  tag: decision
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is superseded by eval.tune_select_metric=none
+    for the local Final recipe. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.pseudo_widefield.width_scale
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  snapshot: 2.5
+  tag: decision
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is superseded by eval.tune_select_metric=none
+    for the local Final recipe. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: eval.report_per_class
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: true
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_eval_report_per_class
+- path: eval.report_per_vendor
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: true
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_eval_report_per_vendor
+- path: eval.select_on_fast
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  snapshot: false
+  tag: decision
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is superseded by eval.tune_select_metric=none
+    for the local Final recipe. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: fusion_selection.budget_seconds
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: 600
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: fusion_selection_block
+- path: fusion_selection.enabled
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: true
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: fusion_selection_block
+- path: fusion_selection.floor_seconds
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: 1200
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: fusion_selection_block
+- path: fusion_selection.margin
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: 0.002
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: fusion_selection_block
+- path: fusion_selection.max_images
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: 100
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: fusion_selection_block
+- path: fusion_selection.menu
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: fusion_menu.json
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: fusion_selection_block
+- path: model.pretrained
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: null
+  tag: off_value
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is the explicit off/default
+    value. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: model.source
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_coteach
+  snapshot: octtta.models.vit_fpn.ViTFPN
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_model_source
+- path: model.source
+  kind: REMOVED
+  runs:
+  - s33_cnn
+  - s34_cnn
+  snapshot: octtta.models.nnunet_like.PlainConvUNet
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_model_source
+- path: runtime.monitor
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  snapshot: challenge_score
+  tag: decision
+  batch: B11
+  why: B11 removes this from the non-co-teach CNN recipe; the trainer default matches the historical value
+    (challenge_score / max). On the exported B path the CNN config is not the primary trainer config;
+    co-teach A retains both settings.
+- path: runtime.monitor_mode
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  snapshot: max
+  tag: decision
+  batch: B11
+  why: B11 removes this from the non-co-teach CNN recipe; the trainer default matches the historical value
+    (challenge_score / max). On the exported B path the CNN config is not the primary trainer config;
+    co-teach A retains both settings.
+- path: runtime.save_top_k
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: 3
+  tag: server_overridden
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is overridden by server_steps.assemble_config
+    before use. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: server.pool_test_images
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: false
+  tag: off_value
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is the explicit off/default
+    value. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: server_budget.gpu
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: sha256:ec8af74b960a50261ecd575123f5ba2abcead90be53c58faa7a88c46acd389bc
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: quoted_gpu
+- path: server_budget.hard_stop_margin
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: 0.9
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_server_budget_hard_stop_margin
+- path: server_budget.max_train_seconds
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: 5100
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_server_budget_max_train_seconds
+- path: server_budget.presubmission_seconds
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: 1800
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_server_budget_presubmission_seconds
+- path: server_budget.reserve_for_census
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: 15
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_server_budget_reserve_for_census
+- path: server_budget.reserve_for_io
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: 285
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_server_budget_reserve_for_io
+- path: server_budget.total_seconds
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: 7200
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_server_budget_total_seconds
+- path: slurm.account
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: q_chen
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: quoted_slurm
+- path: slurm.cpus_per_task
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: 16
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: quoted_slurm
+- path: slurm.gpus
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: h200:2
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: quoted_slurm
+- path: slurm.mem
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: 192G
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: quoted_slurm
+- path: slurm.partition
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: gpu
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: quoted_slurm
+- path: slurm.qos
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: qos_bids
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: quoted_slurm
+- path: slurm.time
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: '12:00:00'
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: quoted_slurm
+- path: train.name
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: source_only
+  tag: no_reader
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is no effective consumer
+    of this original value on the exported A/B path. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+  scan: b11_train_name
+- path: uda.enabled
+  kind: REMOVED
+  runs:
+  - s33_sam_phase1
+  - s33_sam_phase2
+  - s33_cnn
+  - s33_coteach
+  - s34_sam_phase1
+  - s34_sam_phase2
+  - s34_cnn
+  - s34_coteach
+  snapshot: false
+  tag: off_value
+  batch: B11
+  why: B11 trims this historical field from the Final recipe. Its effective role is the explicit off/default
+    value. The contextual reader analysis is recorded in active_release_0929/b11/register/effective-path-review.md.
+- path: train.stop_epoch
+  kind: ADDED
+  runs:
+  - s34_cnn
+  recipe: null
+  tag: decision
+  batch: B11
+  why: The s34 CNN overlay explicitly replaces inherited stop_epoch with null; null and absence both run
+    through the final epoch, so this records the J22 overlay without changing training behavior.

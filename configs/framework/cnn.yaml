@@ -1,0 +1,10 @@
+_base_: ../reproduction/model_a/cnn.yaml
+experiment:
+  id: framework_cnn
+data:
+  partial_pool:
+    enabled: false
+  pool_entries:
+    - challenge_release_synthetic
+train:
+  stop_epoch: null

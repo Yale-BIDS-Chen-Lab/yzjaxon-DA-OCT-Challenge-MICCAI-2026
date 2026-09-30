@@ -1,0 +1,85 @@
+{
+ "enabled": true,
+ "alpha_table": {
+  "macula": [
+   0.35,
+   0.35,
+   0.35,
+   0.35,
+   0.35,
+   0.35,
+   0.35,
+   0.35,
+   0.35
+  ],
+  "maestro2_wide": [
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5
+  ],
+  "spectralis_wide": [
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5
+  ],
+  "triton_12x12": [
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5,
+   0.5
+  ]
+ },
+ "shape_rules": {
+  "maestro2_wide": {
+   "height_max": 910,
+   "height_min": 860,
+   "width_min": 480
+  },
+  "spectralis_wide": {
+   "height_max": 520,
+   "height_min": 480,
+   "width_min": 700
+  },
+  "triton_12x12": {
+   "height_max": 1000,
+   "height_min": 980,
+   "width_min": 480
+  }
+ },
+ "qc": {
+  "enabled": true,
+  "unordered_frac_max": 1.1,
+  "fragmented_frac_max": 1.1,
+  "spike_max": 9.9,
+  "thickness_frac_max": 0.45,
+  "thickness_ratio": 3.0,
+  "thickness_floor_px": 1.0,
+  "median_window": 15,
+  "edge_frac": 0.08,
+  "alpha_when_a_trips": 0.1,
+  "alpha_when_b_trips": 0.9
+ },
+ "column_switch": {
+  "enabled": false,
+  "tau": 0.04,
+  "alpha_win": 0.9,
+  "smooth_cols": 9
+ }
+}

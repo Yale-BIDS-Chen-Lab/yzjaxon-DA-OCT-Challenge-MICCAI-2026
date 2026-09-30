@@ -1,0 +1,50 @@
+# Model B overrides the matching model A training stage.
+_base_: ../model_a/cnn.yaml
+runtime:
+  seed: 20260734
+experiment:
+  id: s34_cnn
+loss:
+  terms:
+  - name: cross_entropy
+    weight: 1.0
+    class_weights:
+    - 1.15
+    - 1.1014
+    - 1.0935
+    - 1.0269
+    - 1.2303
+    - 1.2235
+    - 1.14
+    - 1.2721
+    - 1.3159
+    - 1.15
+  - name: dice
+    weight: 1.0
+    include_background: true
+  - name: boundary
+    weight: 0.5
+    warmup_epochs: 20
+discaug:
+  p: 0.25
+  width_frac:
+  - 0.1
+  - 0.22
+  asymmetry:
+  - 0.6
+  - 1.6
+  residual_frac:
+  - 0.15
+  - 0.45
+  residual_px_min: 12
+  bm_ratio:
+  - 0.15
+  - 0.95
+  tail_frac: 0.06
+  darken:
+  - 0.3
+  - 0.7
+  skip_protocols:
+  - Optic Disc, 6 x 6
+train:
+  stop_epoch: null

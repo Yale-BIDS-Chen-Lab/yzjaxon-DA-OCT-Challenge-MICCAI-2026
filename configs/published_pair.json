@@ -1,0 +1,6117 @@
+{
+  "_doc": [
+    "Reference of the deployment contract and of tests/test_shipped_weights.py: the non-tensor payload and the tensor manifest of the shipped pair (model.pt = A, model_b.pt = B), read with torch.load(mmap=True).",
+    "Paths: an absolute path containing oct_tta_data, oct_tta_runs or oct_tta_ckpts has the prefix before that directory replaced by ${OCTTTA_SCRATCH}.",
+    "scrubbed_paths: string values stored as 'sha256:<hex of the UTF-8 original>' because the release tree may not carry their text (non-ASCII, research codes, machine paths); every one is a provenance or no_reader path of retrained_register, so the contract never compares its value.",
+    "Non-finite floats are stored as the strings 'inf', '-inf', 'nan'.",
+    "retrained_register: every path a retrained export may differ in. provenance = identifies how and where the artefact was made; no_reader = nothing that reads the shipped config (server assembler + trainer, inference, fusion selection, probes) reads the value. Its config paths equal the recipe register entries of configs/reproduction/model_a/coteach.yaml (A) and configs/reproduction/model_b/cnn.yaml (B) plus the normalisation of tests/test_recipes.py (DROPPED, RENAMED); that test asserts it."
+  ],
+  "schema": "octtta/published_pair/1",
+  "files": {
+    "A": {
+      "name": "model.pt",
+      "sha256": "796947502935cb480a29f3ee2edfc7bb021fc40165c43a28f82aecec5e166e5c",
+      "bytes": 1252407063
+    },
+    "B": {
+      "name": "model_b.pt",
+      "sha256": "23024511ed887cfc2e6d694941b1ae68443ae33806d223f31c6d61443e1f5b3d",
+      "bytes": 133995775
+    }
+  },
+  "scrubbed_paths": {
+    "A": [
+      {
+        "path": "config._source",
+        "rules": [
+          "cluster_path"
+        ]
+      },
+      {
+        "path": "config.server_budget.gpu",
+        "rules": [
+          "cjk"
+        ]
+      },
+      {
+        "path": "config.notes",
+        "rules": [
+          "cjk",
+          "id_like"
+        ]
+      },
+      {
+        "path": "config.experiment.purpose",
+        "rules": [
+          "research_code"
+        ]
+      }
+    ],
+    "B": [
+      {
+        "path": "config._source",
+        "rules": [
+          "cluster_path"
+        ]
+      },
+      {
+        "path": "config.server_budget.gpu",
+        "rules": [
+          "cjk"
+        ]
+      },
+      {
+        "path": "config.notes",
+        "rules": [
+          "cjk"
+        ]
+      },
+      {
+        "path": "config.experiment.purpose",
+        "rules": [
+          "research_code"
+        ]
+      }
+    ]
+  },
+  "retrained_register": {
+    "A": [
+      {
+        "path": "quarantine",
+        "tag": "provenance",
+        "why": "lineage stamp; absent in checkpoints of the release trainer, false in the shipped pair (the contract's payload rule refuses true)",
+        "in_published": true
+      },
+      {
+        "path": "quarantine_reasons",
+        "tag": "provenance",
+        "why": "lineage stamp text; read by nothing that decides behaviour",
+        "in_published": true
+      },
+      {
+        "path": "finetune_from",
+        "tag": "provenance",
+        "why": "absolute path of the warm start; differs per machine and per run",
+        "in_published": true
+      },
+      {
+        "path": "config_fingerprint",
+        "tag": "provenance",
+        "why": "hash of the training config of the run that wrote the checkpoint",
+        "in_published": true
+      },
+      {
+        "path": "epoch",
+        "tag": "provenance",
+        "why": "epoch counter of the source checkpoint",
+        "in_published": true
+      },
+      {
+        "path": "best_score",
+        "tag": "provenance",
+        "why": "selection score of the source checkpoint (-inf in a run that never evaluates)",
+        "in_published": true
+      },
+      {
+        "path": "monitor",
+        "tag": "provenance",
+        "why": "name of the selection metric of the source run",
+        "in_published": true
+      },
+      {
+        "path": "last_topology",
+        "tag": "provenance",
+        "why": "last topology read-out of the source run; the server fine-tune logs it",
+        "in_published": true
+      },
+      {
+        "path": "export.exported_at",
+        "tag": "provenance",
+        "why": "wall-clock time of the export",
+        "in_published": true
+      },
+      {
+        "path": "export.exported_from",
+        "tag": "provenance",
+        "why": "path string of the exported checkpoint",
+        "in_published": true
+      },
+      {
+        "path": "export.dropped_keys",
+        "tag": "provenance",
+        "why": "training-state keys the source checkpoint happened to carry",
+        "in_published": true
+      },
+      {
+        "path": "export.plan_before",
+        "tag": "provenance",
+        "why": "the plan of the source checkpoint before the export baked its decisions (plan_after is compared)",
+        "in_published": true
+      },
+      {
+        "path": "export.config_fingerprint_is_of_the_training_config",
+        "tag": "provenance",
+        "why": "a constant note of the exporter",
+        "in_published": true
+      },
+      {
+        "path": "config._source",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.data.convention_shift",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.data.infer_at_native_resolution",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.data.label_repair.mode",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.data.labeled_device",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.data.partial_pool.ignore_on_disk",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.full_every",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.max_images",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.metric",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.metric_workers",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.postproc_warmup_epochs",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.report_per_class",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.report_per_vendor",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.select_ruler_resolved",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.tune_labels_sha256",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.tune_max_images",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.tune_root",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.tune_select_metric",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.experiment",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.fusion_selection.budget_seconds",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.fusion_selection.enabled",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.fusion_selection.floor_seconds",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.fusion_selection.margin",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.fusion_selection.max_images",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.fusion_selection.menu",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.model.pretrained",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.model.source",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.notes",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.runtime.ckpt_dir",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.runtime.out_dir",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.runtime.run_dir",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.runtime.save_top_k",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server.pool_test_images",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.gpu",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.hard_stop_margin",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.max_train_seconds",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.presubmission_seconds",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.reserve_for_census",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.reserve_for_io",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.total_seconds",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.account",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.cpus_per_task",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.gpus",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.mem",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.partition",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.qos",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.time",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.train.finetune_from",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.train.name",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.uda.enabled",
+        "tag": "no_reader"
+      }
+    ],
+    "B": [
+      {
+        "path": "quarantine",
+        "tag": "provenance",
+        "why": "lineage stamp; absent in checkpoints of the release trainer, false in the shipped pair (the contract's payload rule refuses true)",
+        "in_published": true
+      },
+      {
+        "path": "quarantine_reasons",
+        "tag": "provenance",
+        "why": "lineage stamp text; read by nothing that decides behaviour",
+        "in_published": true
+      },
+      {
+        "path": "finetune_from",
+        "tag": "provenance",
+        "why": "absolute path of the warm start; differs per machine and per run",
+        "in_published": true
+      },
+      {
+        "path": "config_fingerprint",
+        "tag": "provenance",
+        "why": "hash of the training config of the run that wrote the checkpoint",
+        "in_published": false
+      },
+      {
+        "path": "epoch",
+        "tag": "provenance",
+        "why": "epoch counter of the source checkpoint",
+        "in_published": true
+      },
+      {
+        "path": "best_score",
+        "tag": "provenance",
+        "why": "selection score of the source checkpoint (-inf in a run that never evaluates)",
+        "in_published": true
+      },
+      {
+        "path": "monitor",
+        "tag": "provenance",
+        "why": "name of the selection metric of the source run",
+        "in_published": false
+      },
+      {
+        "path": "last_topology",
+        "tag": "provenance",
+        "why": "last topology read-out of the source run; the server fine-tune logs it",
+        "in_published": false
+      },
+      {
+        "path": "export.exported_at",
+        "tag": "provenance",
+        "why": "wall-clock time of the export",
+        "in_published": true
+      },
+      {
+        "path": "export.exported_from",
+        "tag": "provenance",
+        "why": "path string of the exported checkpoint",
+        "in_published": true
+      },
+      {
+        "path": "export.dropped_keys",
+        "tag": "provenance",
+        "why": "training-state keys the source checkpoint happened to carry",
+        "in_published": true
+      },
+      {
+        "path": "export.plan_before",
+        "tag": "provenance",
+        "why": "the plan of the source checkpoint before the export baked its decisions (plan_after is compared)",
+        "in_published": true
+      },
+      {
+        "path": "export.config_fingerprint_is_of_the_training_config",
+        "tag": "provenance",
+        "why": "a constant note of the exporter",
+        "in_published": true
+      },
+      {
+        "path": "config._source",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.data.convention_shift",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.data.infer_at_native_resolution",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.data.label_repair.mode",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.data.labeled_device",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.data.partial_pool.ignore_on_disk",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.fast_every",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.fast_max_images",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.full_every",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.max_images",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.metric",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.metric_workers",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.postproc_gate_topology",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.postproc_warmup_epochs",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.pseudo_widefield.drop_peripheral_layers",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.pseudo_widefield.enabled",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.pseudo_widefield.seed",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.pseudo_widefield.vignette",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.pseudo_widefield.width_scale",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.report_per_class",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.report_per_vendor",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.select_on_fast",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.select_ruler_resolved",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.tune_labels_sha256",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.tune_max_images",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.tune_root",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.eval.tune_select_metric",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.experiment",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.fusion_selection.budget_seconds",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.fusion_selection.enabled",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.fusion_selection.floor_seconds",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.fusion_selection.margin",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.fusion_selection.max_images",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.fusion_selection.menu",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.model.pretrained",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.model.source",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.notes",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.runtime.ckpt_dir",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.runtime.monitor",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.runtime.monitor_mode",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.runtime.out_dir",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.runtime.run_dir",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.runtime.save_top_k",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server.pool_test_images",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.gpu",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.hard_stop_margin",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.max_train_seconds",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.presubmission_seconds",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.reserve_for_census",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.reserve_for_io",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.server_budget.total_seconds",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.account",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.cpus_per_task",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.gpus",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.mem",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.partition",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.qos",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.slurm.time",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.train.finetune_from",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.train.name",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.train.stop_epoch",
+        "tag": "no_reader"
+      },
+      {
+        "path": "config.uda.enabled",
+        "tag": "no_reader"
+      }
+    ]
+  },
+  "A": {
+    "payload_keys": [
+      "quarantine",
+      "quarantine_reasons",
+      "run_kind",
+      "finetune_from",
+      "config",
+      "config_fingerprint",
+      "epoch",
+      "best_score",
+      "monitor",
+      "last_topology",
+      "model",
+      "ema",
+      "export"
+    ],
+    "model_is_ema": true,
+    "meta": {
+      "quarantine": false,
+      "quarantine_reasons": [
+        "unlabeled AI-READI frames restaged into the release layout; images only, no labels of any kind"
+      ],
+      "run_kind": "finetune",
+      "finetune_from": "${OCTTTA_SCRATCH}/oct_tta_runs/e11a_final_p2_s20260733/checkpoints/best.pt",
+      "config_fingerprint": "6497d6d66e831cce",
+      "epoch": 0,
+      "best_score": 0.4651873771251753,
+      "monitor": "challenge_score_on_heyex_ruler_gamma_v3",
+      "last_topology": 0.061303681344696964
+    },
+    "config": {
+      "data": {
+        "root": "${OCTTTA_SCRATCH}/oct_tta_data/synthetic_v1.0/release_dataset",
+        "num_classes": 10,
+        "labeled_device": "Topcon_Maestro2",
+        "unlabeled_devices": [
+          "Topcon_Maestro2_unlabeled",
+          "Heidelberg_Spectralis",
+          "Zeiss_Cirrus"
+        ],
+        "oversample_diseased": 2.0,
+        "train_size": [
+          256,
+          256
+        ],
+        "infer_at_native_resolution": true,
+        "crop": {
+          "foreground_prob": 0.6,
+          "foreground_classes": null,
+          "augment_margin": "auto"
+        },
+        "partial_pool": {
+          "enabled": true,
+          "root": "${OCTTTA_SCRATCH}/oct_tta_data/derived/partial_all16_d88",
+          "datasets": [
+            "duke_dme_2015",
+            "jhu_hcms",
+            "oct5k",
+            "aireadi::Heidelberg_Spectralis",
+            "aireadi::Topcon_Maestro2",
+            "aireadi::Topcon_Triton",
+            "aireadi::Zeiss_Cirrus"
+          ],
+          "graders": [
+            1
+          ],
+          "official_share": null,
+          "samples_per_epoch": "unlabeled_pass",
+          "sampling": "cover",
+          "cover_epoch_offset": 0,
+          "cell_balance": {
+            "mode": "identity"
+          },
+          "exclude_cells": [],
+          "frame_cap": {
+            "Zeiss_Cirrus|Optic Disc, 6 x 6": 4
+          }
+        },
+        "label_repair": {
+          "mode": "none"
+        },
+        "official_true_boundaries_only": true,
+        "official_synthetic_boundary_map": "gamma",
+        "split": {
+          "scheme": "group_by_content",
+          "val_fraction": 0.2,
+          "seed": 20260818
+        },
+        "normalize": {
+          "mode": "per_image_zscore",
+          "clip_percentiles": [
+            0.5,
+            99.5
+          ]
+        },
+        "loader": {
+          "batch_size": 8,
+          "num_workers": 8,
+          "pin_memory": true,
+          "persistent_workers": true,
+          "prefetch_factor": 4
+        },
+        "pool_entries": [
+          "challenge_release_synthetic",
+          "public_partial_labels_all16_d88",
+          "unlabeled_local_all_d88"
+        ],
+        "convention_shift": false,
+        "unlabeled_roots": [
+          "${OCTTTA_SCRATCH}/oct_tta_data/derived/unlabeled_all_d88"
+        ],
+        "unlabeled_groups": null
+      },
+      "_source": "sha256:9d84d771715cb91178db8fedb6794a71e68259e9883c165e229b43ca63fc17ca",
+      "runtime": {
+        "seed": 20260733,
+        "deterministic": true,
+        "cudnn_benchmark": false,
+        "device": "cuda",
+        "amp": true,
+        "amp_dtype": "bfloat16",
+        "channels_last": false,
+        "compile": false,
+        "out_dir": "${OCTTTA_SCRATCH}/oct_tta_runs",
+        "ckpt_dir": "${OCTTTA_SCRATCH}/oct_tta_ckpts",
+        "log_every": 50,
+        "val_every_epochs": 25,
+        "save_top_k": 3,
+        "monitor": "challenge_score",
+        "monitor_mode": "max"
+      },
+      "slurm": {
+        "account": "q_chen",
+        "partition": "gpu",
+        "qos": "qos_bids",
+        "gpus": "h200:2",
+        "cpus_per_task": 16,
+        "mem": "192G",
+        "time": "12:00:00"
+      },
+      "server_budget": {
+        "total_seconds": 7200,
+        "presubmission_seconds": 1800,
+        "reserve_for_inference": 1200,
+        "reserve_for_io": 285,
+        "reserve_for_census": 15,
+        "max_train_seconds": 5100,
+        "hard_stop_margin": 0.9,
+        "gpu": "sha256:ec8af74b960a50261ecd575123f5ba2abcead90be53c58faa7a88c46acd389bc"
+      },
+      "fusion_selection": {
+        "enabled": true,
+        "margin": 0.002,
+        "menu": "fusion_menu.json",
+        "budget_seconds": 600,
+        "floor_seconds": 1200,
+        "max_images": 100
+      },
+      "server": {
+        "pool_test_images": false
+      },
+      "inference": {
+        "mode": "sliding_window",
+        "overlap": 0.6875,
+        "patch_size": [
+          256,
+          256
+        ],
+        "max_height": null,
+        "tta_shapes": null,
+        "width_scale_shapes": null,
+        "flatten_shapes": null,
+        "blank_columns": {
+          "enabled": true,
+          "threshold": 0.0,
+          "min_band": 16,
+          "fill": "background"
+        }
+      },
+      "train": {
+        "epochs": 1,
+        "optimizer": {
+          "name": "adamw",
+          "lr": 3e-05,
+          "weight_decay": 0.0001
+        },
+        "scheduler": {
+          "name": "poly",
+          "power": 0.9,
+          "warmup_epochs": 0
+        },
+        "grad_clip": 12.0,
+        "ema": {
+          "enabled": true,
+          "decay": 0.999
+        },
+        "name": "source_only",
+        "finetune": {
+          "phase": 2,
+          "enc_lr": 3e-06,
+          "dec_lr": 3e-05,
+          "layer_decay": 0.8,
+          "unfreeze_last_blocks": 24,
+          "scope": "full"
+        },
+        "consistency": {
+          "enabled": true,
+          "weight_dirty": 0.5,
+          "weight_kl": 0.5,
+          "p": 1.0,
+          "extreme_frac": 0.1666,
+          "aband": {
+            "blur_sigma": [
+              2.0,
+              12.0
+            ],
+            "blur_sigma_extreme": [
+              12.0,
+              18.0
+            ],
+            "noise_sigma": [
+              0.5,
+              3.0
+            ],
+            "noise_sigma_extreme": [
+              3.0,
+              5.0
+            ],
+            "contrast_loss": [
+              0.5,
+              1.0
+            ],
+            "contrast_loss_extreme": [
+              1.0,
+              1.0
+            ],
+            "attenuation": [
+              0.1,
+              0.7
+            ],
+            "attenuation_extreme": [
+              0.03,
+              0.1
+            ],
+            "patch_amp": [
+              0.8,
+              3.5
+            ],
+            "patch_amp_extreme": [
+              3.5,
+              5.0
+            ]
+          }
+        },
+        "finetune_from": "${OCTTTA_SCRATCH}/oct_tta_runs/e11a_final_p2_s20260733/checkpoints/best.pt",
+        "interval_share_penalty": {
+          "weight": 1.0,
+          "max_share": 0.6
+        },
+        "coteach": {
+          "enabled": true,
+          "teacher": "ema",
+          "teacher_decay": null,
+          "target": "cross",
+          "weight": 0.5,
+          "every": 1,
+          "batch_size": 8,
+          "quantile": 0.5,
+          "weight_floor": 0.3,
+          "structure_discount": 0.3,
+          "agree_min": null,
+          "hard_shapes": null,
+          "scope_b": "full",
+          "freeze_norm_affine_b": false,
+          "lr_b": 1e-05,
+          "include_maestro2_unlabeled": true,
+          "include_release_unlabeled": false,
+          "assert_full_pass": true,
+          "full_pass_remainder": {
+            "allow": true,
+            "max_frames": 7
+          },
+          "gate": "column",
+          "dmt": null,
+          "weight_ramp_steps": 0,
+          "teacher_temp_a": 1.0,
+          "teacher_temp_b": 1.0
+        }
+      },
+      "loss": {
+        "terms": [
+          {
+            "name": "cross_entropy",
+            "weight": 1.0,
+            "class_weights": "auto_inverse_sqrt_freq"
+          },
+          {
+            "name": "dice",
+            "weight": 1.0,
+            "include_background": true
+          },
+          {
+            "name": "boundary",
+            "weight": 0.2,
+            "warmup_epochs": 20
+          }
+        ],
+        "deep_supervision": {
+          "enabled": true,
+          "weights": [
+            1.0,
+            0.5,
+            0.25,
+            0.125
+          ]
+        }
+      },
+      "augment": {
+        "vertical_flip": false,
+        "horizontal_flip": true,
+        "pipeline": [
+          {
+            "name": "random_scale",
+            "range": [
+              0.75,
+              1.35
+            ],
+            "axis": "both",
+            "p": 0.5
+          },
+          {
+            "name": "random_anisotropic_scale",
+            "axial": [
+              0.7,
+              1.4
+            ],
+            "lateral": [
+              0.8,
+              1.25
+            ],
+            "p": 0.4
+          },
+          {
+            "name": "random_rotate",
+            "degrees": 8,
+            "p": 0.3
+          },
+          {
+            "name": "random_translate",
+            "frac": 0.1,
+            "p": 0.3
+          },
+          {
+            "name": "elastic",
+            "alpha": 25,
+            "sigma": 6,
+            "p": 0.2
+          },
+          {
+            "name": "gamma",
+            "range": [
+              0.6,
+              1.7
+            ],
+            "p": 0.5
+          },
+          {
+            "name": "brightness_contrast",
+            "brightness": 0.25,
+            "contrast": 0.3,
+            "p": 0.5
+          },
+          {
+            "name": "gaussian_noise",
+            "sigma": [
+              0,
+              0.12
+            ],
+            "p": 0.35
+          },
+          {
+            "name": "speckle_noise",
+            "sigma": [
+              0,
+              0.15
+            ],
+            "p": 0.35
+          },
+          {
+            "name": "gaussian_blur",
+            "sigma": [
+              0,
+              1.2
+            ],
+            "p": 0.25
+          },
+          {
+            "name": "sharpen",
+            "p": 0.15
+          },
+          {
+            "name": "low_res_simulation",
+            "scale": [
+              0.5,
+              1.0
+            ],
+            "p": 0.25
+          }
+        ]
+      },
+      "postproc": {
+        "enforce_monotonic_columns": true,
+        "allow_class_skips": true,
+        "remove_small_islands": false,
+        "min_island_frac": 0.0001,
+        "min_island_floor": 2,
+        "presence_gate": {
+          "enabled": true,
+          "min_pixel_frac": 0.0005,
+          "min_pixels_floor": 32,
+          "min_mean_conf": 0.5,
+          "protected_classes": [
+            0,
+            9
+          ]
+        },
+        "never_invent_classes": true,
+        "enabled": true
+      },
+      "eval": {
+        "metric": "challenge_score",
+        "report_per_vendor": true,
+        "report_per_class": true,
+        "tune_select_metric": "heyex_gamma",
+        "tune_root": "heyex_ruler_gamma_v3",
+        "tune_labels_sha256": "1aafe2a33298d8ff8a49a340c86ae29fb9d9254c768c3a521d2ad99b3d0bd5a7",
+        "tune_max_images": null,
+        "full_every": 10,
+        "fast_every": 4,
+        "fast_max_images": 24,
+        "select_on_fast": false,
+        "max_images": null,
+        "metric_workers": null,
+        "postproc_warmup_epochs": 0,
+        "postproc_gate_topology": 0.2,
+        "pseudo_widefield": {
+          "enabled": true,
+          "width_scale": 2.5,
+          "vignette": 0.5,
+          "drop_peripheral_layers": true,
+          "seed": 0
+        },
+        "select_ruler_resolved": {
+          "tune_select_metric": "heyex_gamma",
+          "name": "heyex_ruler_gamma_v3",
+          "root": "${OCTTTA_SCRATCH}/oct_tta_data/derived/heyex_ruler_gamma_v3",
+          "n_images": 195,
+          "n_available": 195,
+          "labels_sha256": "1aafe2a33298d8ff8a49a340c86ae29fb9d9254c768c3a521d2ad99b3d0bd5a7",
+          "max_images": null,
+          "seed": 20260733,
+          "mapping": "gamma",
+          "ruler_version": "v3",
+          "template_rule_applied": true,
+          "label_convention": "official",
+          "uncount_inferred": true
+        }
+      },
+      "uda": {
+        "enabled": false
+      },
+      "model": {
+        "name": "vit_fpn",
+        "source": "octtta.models.vit_fpn.ViTFPN",
+        "params": {
+          "backbone": "samvit_large_patch16.sa1b",
+          "patch_size": 16,
+          "in_channels": 1,
+          "out_channels": 10,
+          "indices": [
+            5,
+            11,
+            17,
+            23
+          ],
+          "dim": 256,
+          "encoder_weights": null,
+          "pretrained": false,
+          "deep_supervision": true,
+          "encoder_window_size": 16
+        },
+        "pretrained": null
+      },
+      "notes": "sha256:fb3a5890cc2a5f0e1630f6a08ae917d40b9ffc9806856dc0efbccfd74fd5aeaf",
+      "experiment": {
+        "id": "e13_final_dmt_s20260733",
+        "purpose": "sha256:05625fcef21cac9c6e127b8162a87c0e211addaf5bd05468744a4c4fcb6f0529"
+      },
+      "failaug": {
+        "enabled": true,
+        "mode": "gwarp",
+        "p": 0.3,
+        "extreme_frac": 0.1666,
+        "gwarp": {
+          "shift_frac": [
+            0.04,
+            0.3
+          ],
+          "shift_frac_extreme": [
+            0.3,
+            0.45
+          ],
+          "squeeze_frac": [
+            0.03,
+            0.2
+          ],
+          "squeeze_frac_extreme": [
+            0.2,
+            0.3
+          ]
+        }
+      },
+      "fusion": {
+        "enabled": true,
+        "alpha_table": {
+          "macula": [
+            0.35,
+            0.35,
+            0.35,
+            0.35,
+            0.35,
+            0.35,
+            0.35,
+            0.35,
+            0.35
+          ],
+          "maestro2_wide": [
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "spectralis_wide": [
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "triton_12x12": [
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        "shape_rules": {
+          "maestro2_wide": {
+            "height_max": 910,
+            "height_min": 860,
+            "width_min": 480
+          },
+          "spectralis_wide": {
+            "height_max": 520,
+            "height_min": 480,
+            "width_min": 700
+          },
+          "triton_12x12": {
+            "height_max": 1000,
+            "height_min": 980,
+            "width_min": 480
+          }
+        },
+        "qc": {
+          "enabled": true,
+          "unordered_frac_max": 1.1,
+          "fragmented_frac_max": 1.1,
+          "spike_max": 9.9,
+          "thickness_frac_max": 0.45,
+          "thickness_ratio": 3.0,
+          "thickness_floor_px": 1.0,
+          "median_window": 15,
+          "edge_frac": 0.08,
+          "alpha_when_a_trips": 0.1,
+          "alpha_when_b_trips": 0.9
+        },
+        "column_switch": {
+          "enabled": false,
+          "tau": 0.04,
+          "alpha_win": 0.9,
+          "smooth_cols": 9
+        }
+      }
+    },
+    "export": {
+      "exported_at": "2026-09-06T03:51:28+00:00",
+      "exported_from": "${OCTTTA_SCRATCH}/oct_tta_runs/e13_final_dmt_s20260733/checkpoints/best.pt",
+      "weights": "ema",
+      "dropped_keys": [
+        "optimizer",
+        "scheduler",
+        "ema_state",
+        "top_k",
+        "global_step"
+      ],
+      "inference_block": {
+        "mode": "sliding_window",
+        "overlap": 0.6875,
+        "patch_size": [
+          256,
+          256
+        ],
+        "max_height": null,
+        "tta_shapes": null,
+        "width_scale_shapes": null,
+        "flatten_shapes": null,
+        "blank_columns": {
+          "enabled": true,
+          "threshold": 0.0,
+          "min_band": 16,
+          "fill": "background"
+        }
+      },
+      "postproc_enabled": true,
+      "tta_shapes_baked": null,
+      "width_scale_shapes_baked": null,
+      "flatten_shapes_baked": null,
+      "fusion_block": {
+        "enabled": true,
+        "alpha_table": {
+          "macula": [
+            0.35,
+            0.35,
+            0.35,
+            0.35,
+            0.35,
+            0.35,
+            0.35,
+            0.35,
+            0.35
+          ],
+          "maestro2_wide": [
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "spectralis_wide": [
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "triton_12x12": [
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ]
+        },
+        "shape_rules": {
+          "maestro2_wide": {
+            "height_max": 910,
+            "height_min": 860,
+            "width_min": 480
+          },
+          "spectralis_wide": {
+            "height_max": 520,
+            "height_min": 480,
+            "width_min": 700
+          },
+          "triton_12x12": {
+            "height_max": 1000,
+            "height_min": 980,
+            "width_min": 480
+          }
+        },
+        "qc": {
+          "enabled": true,
+          "unordered_frac_max": 1.1,
+          "fragmented_frac_max": 1.1,
+          "spike_max": 9.9,
+          "thickness_frac_max": 0.45,
+          "thickness_ratio": 3.0,
+          "thickness_floor_px": 1.0,
+          "median_window": 15,
+          "edge_frac": 0.08,
+          "alpha_when_a_trips": 0.1,
+          "alpha_when_b_trips": 0.9
+        },
+        "column_switch": {
+          "enabled": false,
+          "tau": 0.04,
+          "alpha_win": 0.9,
+          "smooth_cols": 9
+        }
+      },
+      "finetune_unfreeze_baked": null,
+      "finetune_scope_baked": "full",
+      "finetune_scope_b_baked": "full",
+      "coteach_teacher_baked": "ema",
+      "coteach_target_baked": "cross",
+      "coteach_gate_baked": "column",
+      "coteach_dmt_baked": null,
+      "coteach_weight_ramp_steps_baked": 0,
+      "coteach_teacher_temp_a_baked": 1.0,
+      "coteach_teacher_temp_b_baked": 1.0,
+      "plan_before": "mode=sliding_window patch=(256, 256) overlap=0.6875 tta=off postproc=gate+viterbi",
+      "plan_after": "mode=sliding_window patch=(256, 256) overlap=0.6875 tta=off postproc=gate+viterbi blank_cols=background(thr=0,min=16)",
+      "config_fingerprint_is_of_the_training_config": true
+    },
+    "tensors": {
+      "count": 407,
+      "numel": 313064956,
+      "manifest": [
+        [
+          "encoder.pos_embed",
+          [
+            1,
+            64,
+            64,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.patch_embed.proj.weight",
+          [
+            1024,
+            1,
+            16,
+            16
+          ],
+          "float32"
+        ],
+        [
+          "encoder.patch_embed.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.0.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.1.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.2.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.3.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.4.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.attn.rel_pos_h",
+          [
+            127,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.attn.rel_pos_w",
+          [
+            127,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.5.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.6.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.7.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.8.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.9.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.10.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.attn.rel_pos_h",
+          [
+            127,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.attn.rel_pos_w",
+          [
+            127,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.11.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.12.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.13.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.14.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.15.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.16.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.attn.rel_pos_h",
+          [
+            127,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.attn.rel_pos_w",
+          [
+            127,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.17.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.18.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.19.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.20.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.21.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.attn.rel_pos_h",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.attn.rel_pos_w",
+          [
+            27,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.22.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.norm1.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.norm1.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.attn.rel_pos_h",
+          [
+            127,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.attn.rel_pos_w",
+          [
+            127,
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.attn.qkv.weight",
+          [
+            3072,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.attn.qkv.bias",
+          [
+            3072
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.attn.proj.weight",
+          [
+            1024,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.attn.proj.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.norm2.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.norm2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.mlp.fc1.weight",
+          [
+            4096,
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.mlp.fc1.bias",
+          [
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.mlp.fc2.weight",
+          [
+            1024,
+            4096
+          ],
+          "float32"
+        ],
+        [
+          "encoder.blocks.23.mlp.fc2.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.0.token_norm.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.0.token_norm.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.0.proj.weight",
+          [
+            256,
+            1024,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.0.proj.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.0.resample.1.conv.weight",
+          [
+            256,
+            256,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.0.resample.1.conv.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.0.resample.1.norm.weight",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.0.resample.1.norm.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.0.resample.3.conv.weight",
+          [
+            256,
+            256,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.0.resample.3.conv.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.0.resample.3.norm.weight",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.0.resample.3.norm.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.1.token_norm.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.1.token_norm.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.1.proj.weight",
+          [
+            256,
+            1024,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.1.proj.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.1.resample.1.conv.weight",
+          [
+            256,
+            256,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.1.resample.1.conv.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.1.resample.1.norm.weight",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.1.resample.1.norm.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.2.token_norm.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.2.token_norm.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.2.proj.weight",
+          [
+            256,
+            1024,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.2.proj.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.3.token_norm.weight",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.3.token_norm.bias",
+          [
+            1024
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.3.proj.weight",
+          [
+            256,
+            1024,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.3.proj.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.3.resample.0.conv.weight",
+          [
+            256,
+            256,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.3.resample.0.conv.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.3.resample.0.norm.weight",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "reassemble.3.resample.0.norm.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "smooth.0.conv.weight",
+          [
+            256,
+            256,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "smooth.0.conv.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "smooth.0.norm.weight",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "smooth.0.norm.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "smooth.1.conv.weight",
+          [
+            256,
+            256,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "smooth.1.conv.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "smooth.1.norm.weight",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "smooth.1.norm.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "smooth.2.conv.weight",
+          [
+            256,
+            256,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "smooth.2.conv.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "smooth.2.norm.weight",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "smooth.2.norm.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "smooth.3.conv.weight",
+          [
+            256,
+            256,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "smooth.3.conv.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "smooth.3.norm.weight",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "smooth.3.norm.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "up_blocks.0.conv.conv.weight",
+          [
+            128,
+            256,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "up_blocks.0.conv.conv.bias",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "up_blocks.0.conv.norm.weight",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "up_blocks.0.conv.norm.bias",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "up_blocks.1.conv.conv.weight",
+          [
+            64,
+            128,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "up_blocks.1.conv.conv.bias",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "up_blocks.1.conv.norm.weight",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "up_blocks.1.conv.norm.bias",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "heads.0.weight",
+          [
+            10,
+            64,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "heads.0.bias",
+          [
+            10
+          ],
+          "float32"
+        ],
+        [
+          "heads.1.weight",
+          [
+            10,
+            128,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "heads.1.bias",
+          [
+            10
+          ],
+          "float32"
+        ],
+        [
+          "heads.2.weight",
+          [
+            10,
+            256,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "heads.2.bias",
+          [
+            10
+          ],
+          "float32"
+        ],
+        [
+          "heads.3.weight",
+          [
+            10,
+            256,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "heads.3.bias",
+          [
+            10
+          ],
+          "float32"
+        ],
+        [
+          "heads.4.weight",
+          [
+            10,
+            256,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "heads.4.bias",
+          [
+            10
+          ],
+          "float32"
+        ],
+        [
+          "heads.5.weight",
+          [
+            10,
+            256,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "heads.5.bias",
+          [
+            10
+          ],
+          "float32"
+        ]
+      ]
+    }
+  },
+  "B": {
+    "payload_keys": [
+      "quarantine",
+      "quarantine_reasons",
+      "run_kind",
+      "finetune_from",
+      "config",
+      "epoch",
+      "best_score",
+      "model",
+      "ema",
+      "export"
+    ],
+    "model_is_ema": true,
+    "meta": {
+      "quarantine": false,
+      "quarantine_reasons": [
+        "unlabeled AI-READI frames restaged into the release layout; images only, no labels of any kind"
+      ],
+      "run_kind": "coteach_b",
+      "finetune_from": "${OCTTTA_SCRATCH}/oct_tta_runs/e02_p0final_s20260734/checkpoints/best.pt",
+      "epoch": 0,
+      "best_score": 0.4640755021690749
+    },
+    "config": {
+      "data": {
+        "root": "${OCTTTA_SCRATCH}/oct_tta_data/synthetic_v1.0/release_dataset",
+        "num_classes": 10,
+        "labeled_device": "Topcon_Maestro2",
+        "unlabeled_devices": [
+          "Topcon_Maestro2_unlabeled",
+          "Heidelberg_Spectralis",
+          "Zeiss_Cirrus"
+        ],
+        "oversample_diseased": 2.0,
+        "train_size": [
+          256,
+          256
+        ],
+        "infer_at_native_resolution": true,
+        "crop": {
+          "foreground_prob": 0.6,
+          "foreground_classes": null,
+          "augment_margin": "auto"
+        },
+        "partial_pool": {
+          "enabled": true,
+          "root": "${OCTTTA_SCRATCH}/oct_tta_data/derived/partial_all16_d88",
+          "datasets": [
+            "duke_dme_2015",
+            "jhu_hcms",
+            "oct5k",
+            "aireadi::Heidelberg_Spectralis",
+            "aireadi::Topcon_Maestro2",
+            "aireadi::Topcon_Triton",
+            "aireadi::Zeiss_Cirrus"
+          ],
+          "graders": [
+            1
+          ],
+          "official_share": null,
+          "samples_per_epoch": 29000,
+          "sampling": "cover",
+          "cover_epoch_offset": 0,
+          "cell_balance": {
+            "mode": "identity"
+          },
+          "exclude_cells": []
+        },
+        "label_repair": {
+          "mode": "none"
+        },
+        "official_true_boundaries_only": true,
+        "official_synthetic_boundary_map": "gamma",
+        "split": {
+          "scheme": "hash_by_stem",
+          "val_fraction": 0.2,
+          "seed": 20260725
+        },
+        "normalize": {
+          "mode": "per_image_zscore",
+          "clip_percentiles": [
+            0.5,
+            99.5
+          ]
+        },
+        "loader": {
+          "batch_size": 8,
+          "num_workers": 8,
+          "pin_memory": true,
+          "persistent_workers": true,
+          "prefetch_factor": 4
+        },
+        "convention_shift": false,
+        "pool_entries": [
+          "challenge_release_synthetic",
+          "public_partial_labels_all16_d88"
+        ]
+      },
+      "_source": "sha256:9b9828b09b46a48c89d3d8371dc0b74c9ef4e8f697261ab6ec857437c24ad376",
+      "runtime": {
+        "seed": 20260734,
+        "deterministic": true,
+        "cudnn_benchmark": false,
+        "device": "cuda",
+        "amp": true,
+        "amp_dtype": "bfloat16",
+        "channels_last": false,
+        "compile": false,
+        "out_dir": "${OCTTTA_SCRATCH}/oct_tta_runs",
+        "ckpt_dir": "${OCTTTA_SCRATCH}/oct_tta_ckpts",
+        "log_every": 50,
+        "val_every_epochs": 25,
+        "save_top_k": 3,
+        "monitor": "challenge_score",
+        "monitor_mode": "max"
+      },
+      "slurm": {
+        "account": "q_chen",
+        "partition": "gpu",
+        "qos": "qos_bids",
+        "gpus": "h200:2",
+        "cpus_per_task": 16,
+        "mem": "192G",
+        "time": "12:00:00"
+      },
+      "server_budget": {
+        "total_seconds": 7200,
+        "presubmission_seconds": 1800,
+        "reserve_for_inference": 1200,
+        "reserve_for_io": 285,
+        "reserve_for_census": 15,
+        "max_train_seconds": 5100,
+        "hard_stop_margin": 0.9,
+        "gpu": "sha256:ec8af74b960a50261ecd575123f5ba2abcead90be53c58faa7a88c46acd389bc"
+      },
+      "fusion_selection": {
+        "enabled": true,
+        "margin": 0.002,
+        "menu": "fusion_menu.json",
+        "budget_seconds": 600,
+        "floor_seconds": 1200,
+        "max_images": 100
+      },
+      "server": {
+        "pool_test_images": false
+      },
+      "inference": {
+        "mode": "sliding_window",
+        "overlap": 0.6875,
+        "patch_size": [
+          256,
+          256
+        ],
+        "max_height": null,
+        "tta_shapes": null,
+        "width_scale_shapes": null,
+        "flatten_shapes": null,
+        "blank_columns": {
+          "enabled": true,
+          "threshold": 0.0,
+          "min_band": 16,
+          "fill": "background"
+        }
+      },
+      "train": {
+        "epochs": 30,
+        "optimizer": {
+          "name": "adamw",
+          "lr": 0.0003,
+          "weight_decay": 0.0001
+        },
+        "scheduler": {
+          "name": "poly",
+          "power": 0.9,
+          "warmup_epochs": 2
+        },
+        "grad_clip": 12.0,
+        "ema": {
+          "enabled": true,
+          "decay": 0.999
+        },
+        "name": "source_only",
+        "consistency": {
+          "enabled": true,
+          "weight_dirty": 0.5,
+          "weight_kl": 0.5,
+          "p": 1.0,
+          "extreme_frac": 0.1666,
+          "aband": {
+            "blur_sigma": [
+              2.0,
+              12.0
+            ],
+            "blur_sigma_extreme": [
+              12.0,
+              18.0
+            ],
+            "noise_sigma": [
+              0.5,
+              3.0
+            ],
+            "noise_sigma_extreme": [
+              3.0,
+              5.0
+            ],
+            "contrast_loss": [
+              0.5,
+              1.0
+            ],
+            "contrast_loss_extreme": [
+              1.0,
+              1.0
+            ],
+            "attenuation": [
+              0.1,
+              0.7
+            ],
+            "attenuation_extreme": [
+              0.03,
+              0.1
+            ],
+            "patch_amp": [
+              0.8,
+              3.5
+            ],
+            "patch_amp_extreme": [
+              3.5,
+              5.0
+            ]
+          }
+        }
+      },
+      "loss": {
+        "terms": [
+          {
+            "name": "cross_entropy",
+            "weight": 1.0,
+            "class_weights": [
+              1.15,
+              1.1014,
+              1.0935,
+              1.0269,
+              1.2303,
+              1.2235,
+              1.14,
+              1.2721,
+              1.3159,
+              1.15
+            ]
+          },
+          {
+            "name": "dice",
+            "weight": 1.0,
+            "include_background": true
+          },
+          {
+            "name": "boundary",
+            "weight": 0.5,
+            "warmup_epochs": 20
+          }
+        ],
+        "deep_supervision": {
+          "enabled": true,
+          "weights": [
+            1.0,
+            0.5,
+            0.25,
+            0.125
+          ]
+        }
+      },
+      "augment": {
+        "vertical_flip": false,
+        "horizontal_flip": true,
+        "pipeline": [
+          {
+            "name": "random_scale",
+            "range": [
+              0.75,
+              1.35
+            ],
+            "axis": "both",
+            "p": 0.5
+          },
+          {
+            "name": "random_anisotropic_scale",
+            "axial": [
+              0.7,
+              1.4
+            ],
+            "lateral": [
+              0.8,
+              1.25
+            ],
+            "p": 0.4
+          },
+          {
+            "name": "random_rotate",
+            "degrees": 8,
+            "p": 0.3
+          },
+          {
+            "name": "random_translate",
+            "frac": 0.1,
+            "p": 0.3
+          },
+          {
+            "name": "elastic",
+            "alpha": 25,
+            "sigma": 6,
+            "p": 0.2
+          },
+          {
+            "name": "gamma",
+            "range": [
+              0.6,
+              1.7
+            ],
+            "p": 0.5
+          },
+          {
+            "name": "brightness_contrast",
+            "brightness": 0.25,
+            "contrast": 0.3,
+            "p": 0.5
+          },
+          {
+            "name": "gaussian_noise",
+            "sigma": [
+              0,
+              0.12
+            ],
+            "p": 0.35
+          },
+          {
+            "name": "speckle_noise",
+            "sigma": [
+              0,
+              0.15
+            ],
+            "p": 0.35
+          },
+          {
+            "name": "gaussian_blur",
+            "sigma": [
+              0,
+              1.2
+            ],
+            "p": 0.25
+          },
+          {
+            "name": "sharpen",
+            "p": 0.15
+          },
+          {
+            "name": "low_res_simulation",
+            "scale": [
+              0.5,
+              1.0
+            ],
+            "p": 0.25
+          }
+        ]
+      },
+      "postproc": {
+        "enforce_monotonic_columns": true,
+        "allow_class_skips": true,
+        "remove_small_islands": false,
+        "min_island_frac": 0.0001,
+        "min_island_floor": 2,
+        "presence_gate": {
+          "enabled": true,
+          "min_pixel_frac": 0.0005,
+          "min_pixels_floor": 32,
+          "min_mean_conf": 0.5,
+          "protected_classes": [
+            0,
+            9
+          ]
+        },
+        "never_invent_classes": true,
+        "enabled": true
+      },
+      "eval": {
+        "metric": "challenge_score",
+        "report_per_vendor": true,
+        "report_per_class": true,
+        "tune_select_metric": "heyex_gamma",
+        "tune_root": "heyex_ruler_gamma_v3",
+        "tune_labels_sha256": "1aafe2a33298d8ff8a49a340c86ae29fb9d9254c768c3a521d2ad99b3d0bd5a7",
+        "tune_max_images": null,
+        "full_every": 25,
+        "fast_every": 10,
+        "fast_max_images": 24,
+        "select_on_fast": false,
+        "max_images": null,
+        "metric_workers": null,
+        "postproc_warmup_epochs": 1,
+        "postproc_gate_topology": 0.2,
+        "tta": false,
+        "pseudo_widefield": {
+          "enabled": true,
+          "width_scale": 2.5,
+          "vignette": 0.5,
+          "drop_peripheral_layers": true,
+          "seed": 0
+        },
+        "select_ruler_resolved": {
+          "tune_select_metric": "heyex_gamma",
+          "name": "heyex_ruler_gamma_v3",
+          "root": "${OCTTTA_SCRATCH}/oct_tta_data/derived/heyex_ruler_gamma_v3",
+          "n_images": 195,
+          "n_available": 195,
+          "labels_sha256": "1aafe2a33298d8ff8a49a340c86ae29fb9d9254c768c3a521d2ad99b3d0bd5a7",
+          "max_images": null,
+          "seed": 20260734,
+          "mapping": "gamma",
+          "ruler_version": "v3",
+          "template_rule_applied": true,
+          "label_convention": "official",
+          "uncount_inferred": true
+        }
+      },
+      "uda": {
+        "enabled": false
+      },
+      "model": {
+        "name": "nnunet2d",
+        "source": "octtta.models.nnunet_like.PlainConvUNet",
+        "params": {
+          "in_channels": 1,
+          "out_channels": 10,
+          "n_stages": 7,
+          "features_per_stage": [
+            32,
+            64,
+            128,
+            256,
+            512,
+            512,
+            512
+          ],
+          "kernel_sizes": [
+            [
+              3,
+              3
+            ],
+            [
+              3,
+              3
+            ],
+            [
+              3,
+              3
+            ],
+            [
+              3,
+              3
+            ],
+            [
+              3,
+              3
+            ],
+            [
+              3,
+              3
+            ],
+            [
+              3,
+              3
+            ]
+          ],
+          "strides": [
+            [
+              1,
+              1
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ]
+          ],
+          "n_conv_per_stage": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "n_conv_per_stage_decoder": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "norm": "instance",
+          "nonlin": "leakyrelu",
+          "deep_supervision": true
+        },
+        "pretrained": null
+      },
+      "notes": "sha256:5ebf7ad39f16b89a68517d8d78d65ddc96a5f8792e074d2a9d3e5ba63ba8bb0f",
+      "experiment": {
+        "id": "e02_p0final_s20260734",
+        "purpose": "sha256:97029dc5536cc805a97ff7e47f772e6732696b45ebaa10ba8c1da9857dcbc70c"
+      },
+      "discaug": {
+        "p": 0.25,
+        "width_frac": [
+          0.1,
+          0.22
+        ],
+        "asymmetry": [
+          0.6,
+          1.6
+        ],
+        "residual_frac": [
+          0.15,
+          0.45
+        ],
+        "residual_px_min": 12,
+        "bm_ratio": [
+          0.15,
+          0.95
+        ],
+        "tail_frac": 0.06,
+        "darken": [
+          0.3,
+          0.7
+        ],
+        "skip_protocols": [
+          "Optic Disc, 6 x 6"
+        ]
+      }
+    },
+    "export": {
+      "exported_at": "2026-09-06T03:51:31+00:00",
+      "exported_from": "${OCTTTA_SCRATCH}/oct_tta_runs/e13_final_dmt_s20260734/checkpoints/best_b.pt",
+      "weights": "ema",
+      "dropped_keys": [
+        "optimizer",
+        "scheduler",
+        "ema_state",
+        "global_step"
+      ],
+      "inference_block": {
+        "mode": "sliding_window",
+        "overlap": 0.6875,
+        "patch_size": [
+          256,
+          256
+        ],
+        "max_height": null,
+        "tta_shapes": null,
+        "width_scale_shapes": null,
+        "flatten_shapes": null,
+        "blank_columns": {
+          "enabled": true,
+          "threshold": 0.0,
+          "min_band": 16,
+          "fill": "background"
+        }
+      },
+      "postproc_enabled": true,
+      "tta_shapes_baked": null,
+      "width_scale_shapes_baked": null,
+      "flatten_shapes_baked": null,
+      "fusion_block": null,
+      "finetune_unfreeze_baked": null,
+      "finetune_scope_baked": null,
+      "finetune_scope_b_baked": null,
+      "coteach_teacher_baked": null,
+      "coteach_target_baked": null,
+      "coteach_gate_baked": null,
+      "coteach_dmt_baked": null,
+      "coteach_weight_ramp_steps_baked": null,
+      "coteach_teacher_temp_a_baked": null,
+      "coteach_teacher_temp_b_baked": null,
+      "plan_before": "mode=sliding_window patch=(256, 256) overlap=0.6875 tta=off postproc=off",
+      "plan_after": "mode=sliding_window patch=(256, 256) overlap=0.6875 tta=off postproc=gate+viterbi blank_cols=background(thr=0,min=16)",
+      "config_fingerprint_is_of_the_training_config": true
+    },
+    "tensors": {
+      "count": 128,
+      "numel": 33483900,
+      "manifest": [
+        [
+          "encoder.0.blocks.0.conv.weight",
+          [
+            32,
+            1,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.0.blocks.0.conv.bias",
+          [
+            32
+          ],
+          "float32"
+        ],
+        [
+          "encoder.0.blocks.0.norm.weight",
+          [
+            32
+          ],
+          "float32"
+        ],
+        [
+          "encoder.0.blocks.0.norm.bias",
+          [
+            32
+          ],
+          "float32"
+        ],
+        [
+          "encoder.0.blocks.1.conv.weight",
+          [
+            32,
+            32,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.0.blocks.1.conv.bias",
+          [
+            32
+          ],
+          "float32"
+        ],
+        [
+          "encoder.0.blocks.1.norm.weight",
+          [
+            32
+          ],
+          "float32"
+        ],
+        [
+          "encoder.0.blocks.1.norm.bias",
+          [
+            32
+          ],
+          "float32"
+        ],
+        [
+          "encoder.1.blocks.0.conv.weight",
+          [
+            64,
+            32,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.1.blocks.0.conv.bias",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.1.blocks.0.norm.weight",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.1.blocks.0.norm.bias",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.1.blocks.1.conv.weight",
+          [
+            64,
+            64,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.1.blocks.1.conv.bias",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.1.blocks.1.norm.weight",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.1.blocks.1.norm.bias",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "encoder.2.blocks.0.conv.weight",
+          [
+            128,
+            64,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.2.blocks.0.conv.bias",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "encoder.2.blocks.0.norm.weight",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "encoder.2.blocks.0.norm.bias",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "encoder.2.blocks.1.conv.weight",
+          [
+            128,
+            128,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.2.blocks.1.conv.bias",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "encoder.2.blocks.1.norm.weight",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "encoder.2.blocks.1.norm.bias",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "encoder.3.blocks.0.conv.weight",
+          [
+            256,
+            128,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.3.blocks.0.conv.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "encoder.3.blocks.0.norm.weight",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "encoder.3.blocks.0.norm.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "encoder.3.blocks.1.conv.weight",
+          [
+            256,
+            256,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.3.blocks.1.conv.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "encoder.3.blocks.1.norm.weight",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "encoder.3.blocks.1.norm.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "encoder.4.blocks.0.conv.weight",
+          [
+            512,
+            256,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.4.blocks.0.conv.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.4.blocks.0.norm.weight",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.4.blocks.0.norm.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.4.blocks.1.conv.weight",
+          [
+            512,
+            512,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.4.blocks.1.conv.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.4.blocks.1.norm.weight",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.4.blocks.1.norm.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.5.blocks.0.conv.weight",
+          [
+            512,
+            512,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.5.blocks.0.conv.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.5.blocks.0.norm.weight",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.5.blocks.0.norm.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.5.blocks.1.conv.weight",
+          [
+            512,
+            512,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.5.blocks.1.conv.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.5.blocks.1.norm.weight",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.5.blocks.1.norm.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.6.blocks.0.conv.weight",
+          [
+            512,
+            512,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.6.blocks.0.conv.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.6.blocks.0.norm.weight",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.6.blocks.0.norm.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.6.blocks.1.conv.weight",
+          [
+            512,
+            512,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "encoder.6.blocks.1.conv.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.6.blocks.1.norm.weight",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "encoder.6.blocks.1.norm.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.0.up.weight",
+          [
+            512,
+            512,
+            2,
+            2
+          ],
+          "float32"
+        ],
+        [
+          "decoder.0.up.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.0.convs.blocks.0.conv.weight",
+          [
+            512,
+            1024,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "decoder.0.convs.blocks.0.conv.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.0.convs.blocks.0.norm.weight",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.0.convs.blocks.0.norm.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.0.convs.blocks.1.conv.weight",
+          [
+            512,
+            512,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "decoder.0.convs.blocks.1.conv.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.0.convs.blocks.1.norm.weight",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.0.convs.blocks.1.norm.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.1.up.weight",
+          [
+            512,
+            512,
+            2,
+            2
+          ],
+          "float32"
+        ],
+        [
+          "decoder.1.up.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.1.convs.blocks.0.conv.weight",
+          [
+            512,
+            1024,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "decoder.1.convs.blocks.0.conv.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.1.convs.blocks.0.norm.weight",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.1.convs.blocks.0.norm.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.1.convs.blocks.1.conv.weight",
+          [
+            512,
+            512,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "decoder.1.convs.blocks.1.conv.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.1.convs.blocks.1.norm.weight",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.1.convs.blocks.1.norm.bias",
+          [
+            512
+          ],
+          "float32"
+        ],
+        [
+          "decoder.2.up.weight",
+          [
+            512,
+            256,
+            2,
+            2
+          ],
+          "float32"
+        ],
+        [
+          "decoder.2.up.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "decoder.2.convs.blocks.0.conv.weight",
+          [
+            256,
+            512,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "decoder.2.convs.blocks.0.conv.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "decoder.2.convs.blocks.0.norm.weight",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "decoder.2.convs.blocks.0.norm.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "decoder.2.convs.blocks.1.conv.weight",
+          [
+            256,
+            256,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "decoder.2.convs.blocks.1.conv.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "decoder.2.convs.blocks.1.norm.weight",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "decoder.2.convs.blocks.1.norm.bias",
+          [
+            256
+          ],
+          "float32"
+        ],
+        [
+          "decoder.3.up.weight",
+          [
+            256,
+            128,
+            2,
+            2
+          ],
+          "float32"
+        ],
+        [
+          "decoder.3.up.bias",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "decoder.3.convs.blocks.0.conv.weight",
+          [
+            128,
+            256,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "decoder.3.convs.blocks.0.conv.bias",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "decoder.3.convs.blocks.0.norm.weight",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "decoder.3.convs.blocks.0.norm.bias",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "decoder.3.convs.blocks.1.conv.weight",
+          [
+            128,
+            128,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "decoder.3.convs.blocks.1.conv.bias",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "decoder.3.convs.blocks.1.norm.weight",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "decoder.3.convs.blocks.1.norm.bias",
+          [
+            128
+          ],
+          "float32"
+        ],
+        [
+          "decoder.4.up.weight",
+          [
+            128,
+            64,
+            2,
+            2
+          ],
+          "float32"
+        ],
+        [
+          "decoder.4.up.bias",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "decoder.4.convs.blocks.0.conv.weight",
+          [
+            64,
+            128,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "decoder.4.convs.blocks.0.conv.bias",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "decoder.4.convs.blocks.0.norm.weight",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "decoder.4.convs.blocks.0.norm.bias",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "decoder.4.convs.blocks.1.conv.weight",
+          [
+            64,
+            64,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "decoder.4.convs.blocks.1.conv.bias",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "decoder.4.convs.blocks.1.norm.weight",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "decoder.4.convs.blocks.1.norm.bias",
+          [
+            64
+          ],
+          "float32"
+        ],
+        [
+          "decoder.5.up.weight",
+          [
+            64,
+            32,
+            2,
+            2
+          ],
+          "float32"
+        ],
+        [
+          "decoder.5.up.bias",
+          [
+            32
+          ],
+          "float32"
+        ],
+        [
+          "decoder.5.convs.blocks.0.conv.weight",
+          [
+            32,
+            64,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "decoder.5.convs.blocks.0.conv.bias",
+          [
+            32
+          ],
+          "float32"
+        ],
+        [
+          "decoder.5.convs.blocks.0.norm.weight",
+          [
+            32
+          ],
+          "float32"
+        ],
+        [
+          "decoder.5.convs.blocks.0.norm.bias",
+          [
+            32
+          ],
+          "float32"
+        ],
+        [
+          "decoder.5.convs.blocks.1.conv.weight",
+          [
+            32,
+            32,
+            3,
+            3
+          ],
+          "float32"
+        ],
+        [
+          "decoder.5.convs.blocks.1.conv.bias",
+          [
+            32
+          ],
+          "float32"
+        ],
+        [
+          "decoder.5.convs.blocks.1.norm.weight",
+          [
+            32
+          ],
+          "float32"
+        ],
+        [
+          "decoder.5.convs.blocks.1.norm.bias",
+          [
+            32
+          ],
+          "float32"
+        ],
+        [
+          "heads.0.weight",
+          [
+            10,
+            512,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "heads.0.bias",
+          [
+            10
+          ],
+          "float32"
+        ],
+        [
+          "heads.1.weight",
+          [
+            10,
+            512,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "heads.1.bias",
+          [
+            10
+          ],
+          "float32"
+        ],
+        [
+          "heads.2.weight",
+          [
+            10,
+            256,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "heads.2.bias",
+          [
+            10
+          ],
+          "float32"
+        ],
+        [
+          "heads.3.weight",
+          [
+            10,
+            128,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "heads.3.bias",
+          [
+            10
+          ],
+          "float32"
+        ],
+        [
+          "heads.4.weight",
+          [
+            10,
+            64,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "heads.4.bias",
+          [
+            10
+          ],
+          "float32"
+        ],
+        [
+          "heads.5.weight",
+          [
+            10,
+            32,
+            1,
+            1
+          ],
+          "float32"
+        ],
+        [
+          "heads.5.bias",
+          [
+            10
+          ],
+          "float32"
+        ]
+      ]
+    }
+  }
+}

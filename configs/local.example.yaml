@@ -1,0 +1,19 @@
+# Copy to local.yaml and set scratch. local.yaml is git-ignored and must stay private.
+scratch: /path/to/scratch
+data: null            # defaults to <scratch>/oct_tta_data
+runs: null            # defaults to <scratch>/oct_tta_runs
+ckpt: null            # defaults to <scratch>/oct_tta_ckpts
+python_activate: null # optional shell activation command/path
+slurm:
+  account: null
+  partition: null
+  qos: null
+  # For sites where the GPU QoS rejects CPU jobs:
+  # cpu:
+  #   partition: day
+  #   qos: normal
+  # Omitted cpu.account inherits slurm.account; null clears any inherited field.
+  gpu: h100
+  wall_hours: null
+published_weights: null # optional directory containing model.pt and model_b.pt
+aireadi_participants: null # optional; defaults to <data>/public/ai_readi/participants.tsv
