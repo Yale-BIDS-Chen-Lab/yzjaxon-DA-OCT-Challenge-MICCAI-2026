@@ -87,7 +87,7 @@ See [REPRODUCE](docs/REPRODUCE.md) for a complete walkthrough, including custom 
 
 ## Model availability
 
-Model weights are not yet publicly available. Download links and instructions will be added in a future release.
+[Download model weights on Hugging Face](https://huggingface.co/Yale-BIDS-Chen/DA-OCT-Challenge-MICCAI-2026).
 
 # Intended use and limitations
 
