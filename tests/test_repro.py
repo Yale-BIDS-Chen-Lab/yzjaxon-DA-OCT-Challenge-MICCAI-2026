@@ -227,6 +227,36 @@ def test_export_cli_accepts_single_model_and_custom_output(monkeypatch, tmp_path
     assert seen[1][-3:] == ("--b", "b.pt", "--final-recipe")
 
 
+def test_positional_paths_and_configured_launcher(monkeypatch, tmp_path):
+    seen = []
+    monkeypatch.setattr(repro, "_single",
+                        lambda name, command, **kw: seen.append((command, kw["local"])))
+    monkeypatch.setattr(repro, "_weights", lambda origin: (Path("a.pt"), Path("b.pt")))
+    settings = {}
+    monkeypatch.setattr(repro, "_local_settings", lambda: settings)
+    assert repro.main(["infer", "images", "masks"]) == 0
+    assert repro.main(["infer", "--images", "images", "--out", "masks"]) == 0
+    assert seen[0] == seen[1] and seen[0][0][-4:] == ("--images", "images", "--out", "masks")
+    assert seen[0][1] is False
+    settings["launcher"] = "local"
+    assert repro.main(["export", "custom.pt", str(tmp_path)]) == 0
+    assert seen[2] == ((repro.sys.executable, "scripts/export/export_pair.py",
+                        "--a", "custom.pt", "--out", str(tmp_path)), True)
+    assert repro.main(["export", "custom.pt", str(tmp_path), "--dry"]) == 0
+    assert seen[3][1] is False
+    runs = []
+    monkeypatch.setattr(repro, "run", lambda config, **kw: runs.append((config, kw)))
+    assert repro.main(["run", "configs/framework/cnn.yaml"]) == 0
+    assert runs == [(Path("configs/framework/cnn.yaml"), {"dry": False, "local": True})]
+    with pytest.raises(SystemExit):
+        repro.main(["infer", "images"])
+    with pytest.raises(SystemExit):
+        repro.main(["run", "one.yaml", "--config", "two.yaml"])
+    settings["launcher"] = "cloud"
+    with pytest.raises(ValueError, match="launcher"):
+        repro.main(["infer", "images", "masks"])
+
+
 def test_train_sbatch_flags_and_config_advice(monkeypatch):
     monkeypatch.setattr(repro, "_slurm", lambda: {
         "gpu": "h100", "account": "project", "partition": None,

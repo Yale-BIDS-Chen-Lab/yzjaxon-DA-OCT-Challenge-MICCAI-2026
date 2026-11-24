@@ -62,6 +62,24 @@ def _slurm() -> dict:
     return _local_settings().get("slurm") or {}
 
 
+def _launcher_is_local() -> bool:
+    """Whether configs/local.yaml selects local execution as the default."""
+    value = _local_settings().get("launcher") or "slurm"
+    if value not in ("slurm", "local"):
+        raise ValueError("configs/local.yaml launcher must be 'slurm' or 'local'")
+    return value == "local"
+
+
+def _one_of(parser: argparse.ArgumentParser, name: str, positional, option):
+    """Resolve a value given either positionally or through its option."""
+    if positional is not None and option is not None and positional != option:
+        parser.error(f"{name} given twice with different values")
+    value = positional if positional is not None else option
+    if value is None:
+        parser.error(f"{name} is required")
+    return value
+
+
 def _cpu_overrides(site: dict) -> dict:
     """Validated CPU-only Slurm fields; absent keys inherit the generic fields."""
     if "cpu" not in site:
@@ -410,23 +428,38 @@ def main(argv: list[str] | None = None) -> int:
     t.add_argument("--lineage", choices=("s33", "s34", "both"), default="both")
     t.add_argument("--skip-build", action="store_true", help="use existing data pools")
     single = sub.add_parser("run")
-    single.add_argument("--config", required=True, type=Path)
+    single.add_argument("config_path", nargs="?", type=Path, metavar="CONFIG")
+    single.add_argument("--config", type=Path)
     export = sub.add_parser("export")
-    export.add_argument("--a", required=True, type=Path)
+    export.add_argument("a_path", nargs="?", type=Path, metavar="CHECKPOINT")
+    export.add_argument("out_path", nargs="?", type=Path, metavar="OUT_DIR")
+    export.add_argument("--a", type=Path)
     export.add_argument("--b", type=Path)
-    export.add_argument("--out", required=True, type=Path)
+    export.add_argument("--out", type=Path)
     export.add_argument("--final-recipe", action="store_true")
     score = sub.add_parser("score")
     score.add_argument("--weights", choices=("published", "mine"), default="published")
     infer = sub.add_parser("infer")
-    infer.add_argument("--images", required=True, type=Path)
-    infer.add_argument("--out", required=True, type=Path)
+    infer.add_argument("images_path", nargs="?", type=Path, metavar="IMAGE_DIR")
+    infer.add_argument("out_path", nargs="?", type=Path, metavar="MASK_DIR")
+    infer.add_argument("--images", type=Path)
+    infer.add_argument("--out", type=Path)
     infer.add_argument("--weights", choices=("published", "mine"), default="published")
     for parser in (b, d, t, single, export, score, infer):
         mode = parser.add_mutually_exclusive_group()
         mode.add_argument("--dry", action="store_true")
         mode.add_argument("--local", action="store_true")
     args = p.parse_args(argv)
+    if args.command == "run":
+        args.config = _one_of(single, "CONFIG", args.config_path, args.config)
+    elif args.command == "export":
+        args.a = _one_of(export, "CHECKPOINT", args.a_path, args.a)
+        args.out = _one_of(export, "OUT_DIR", args.out_path, args.out)
+    elif args.command == "infer":
+        args.images = _one_of(infer, "IMAGE_DIR", args.images_path, args.images)
+        args.out = _one_of(infer, "MASK_DIR", args.out_path, args.out)
+    if hasattr(args, "dry") and not args.dry and not args.local:
+        args.local = _launcher_is_local()
     if args.command == "build":
         build(public_only=args.public_only, dry=args.dry, local=args.local)
     elif args.command == "reproduce":

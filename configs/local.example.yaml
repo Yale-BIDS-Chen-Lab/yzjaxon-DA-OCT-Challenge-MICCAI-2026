@@ -4,6 +4,7 @@ data: null            # defaults to <scratch>/oct_tta_data
 runs: null            # defaults to <scratch>/oct_tta_runs
 ckpt: null            # defaults to <scratch>/oct_tta_ckpts
 python_activate: null # optional shell activation command/path
+launcher: slurm       # slurm submits jobs; local runs them on this machine (same as --local)
 slurm:
   account: null
   partition: null
